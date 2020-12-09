@@ -1,0 +1,28 @@
+# Use postgres/example user/password credentials
+version: '3.1'
+
+services:
+
+  device-db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_DB: device-db
+      POSTGRES_USER: device-service
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ./data:/var/lib/postgresql
+
+    # PROD
+    #device-service:
+    # image: quarkus/device-service-jvm
+    #restart: on-failure
+    #build:
+    #  context: .
+    #  dockerfile: Dockerfile.jvm
+    #ports:
+    #  - "8080:8080"
+    #depends_on:
+    #  - device-db
