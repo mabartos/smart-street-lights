@@ -12,6 +12,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -30,18 +31,50 @@ public class DevicesResourceAsync {
     @GET
     public Multi<Device> getAll(@QueryParam("firstResult") Integer firstResult,
                                 @QueryParam("maxResults") Integer maxResults) {
-        return Multi.createFrom().items(session.getDeviceService().getAll(firstResult, maxResults));
+        return Multi.createFrom().items(session.getDeviceRepository().getAll(firstResult, maxResults));
+    }
+
+    @GET
+    @Path("/serial/{serialNo}")
+    public Uni<Device> getBySerialNo(@PathParam("serialNo") String serialNo) {
+        return Uni.createFrom()
+                .item(session.getDeviceRepository().getBySerialNo(serialNo))
+                .onItem()
+                .ifNull().failWith(notFoundException());
+    }
+
+    // Lately, it'd be better from street service
+    @GET
+    @Path("/fromStreet/{streetID}")
+    public Multi<Device> getAllFromStreet(@PathParam("streetID") String streetID,
+                                          @QueryParam("firstResult") Integer firstResult,
+                                          @QueryParam("maxResults") Integer maxResults) {
+        return Multi.createFrom()
+                .items(session.getDeviceRepository().getAllFromStreet(streetID, firstResult, maxResults));
+    }
+
+    @GET
+    @Path("/fromCity/{cityID}")
+    public Multi<Device> getAllFromCity(@PathParam("cityID") String cityID,
+                                        @QueryParam("firstResult") Integer firstResult,
+                                        @QueryParam("maxResults") Integer maxResults) {
+        return Multi.createFrom()
+                .items(session.getDeviceRepository().getAllFromCity(cityID, firstResult, maxResults));
     }
 
     @POST
-    public void create(Device device) {
-        session.getDeviceService().create(device);
+    public Uni<Device> create(Device device) {
+        return Uni.createFrom()
+                .item(session.getDeviceRepository().create(device))
+                .onItem()
+                .ifNull()
+                .failWith(notFoundException());
     }
 
     @PUT
     public Uni<Device> update(Device device) {
         return Uni.createFrom()
-                .item(session.getDeviceService().update(device))
+                .item(session.getDeviceRepository().update(device))
                 .onItem()
                 .ifNull()
                 .failWith(notFoundException());

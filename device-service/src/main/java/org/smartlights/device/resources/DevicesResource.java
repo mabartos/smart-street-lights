@@ -34,19 +34,43 @@ public class DevicesResource {
     }
 
     @GET
+    @Path("/serial/{serialNo}")
+    public Device getBySerialNo(@PathParam("serialNo") String serialNo) {
+        return session.getDeviceRepository().getBySerialNo(serialNo);
+    }
+
+    @GET
     public Stream<Device> getAll(@QueryParam("firstResult") Integer firstResult,
                                  @QueryParam("maxResults") Integer maxResults) {
-        return session.getDeviceService().getAll(firstResult, maxResults);
+        return session.getDeviceRepository().getAll(firstResult, maxResults);
+    }
+
+    // Lately, it'd be better from street service
+    @GET
+    @Path("/fromStreet/{streetID}")
+    public Stream<Device> getAllFromStreet(@PathParam("streetID") String streetID,
+                                           @QueryParam("firstResult") Integer firstResult,
+                                           @QueryParam("maxResults") Integer maxResults) {
+        return session.getDeviceRepository().getAllFromStreet(streetID, firstResult, maxResults);
+    }
+
+    @GET
+    @Path("/fromCity/{cityID}")
+    public Stream<Device> getAllFromCity(@PathParam("cityID") String cityID,
+                                         @QueryParam("firstResult") Integer firstResult,
+                                         @QueryParam("maxResults") Integer maxResults) {
+        return session.getDeviceRepository().getAllFromCity(cityID, firstResult, maxResults);
     }
 
     @POST
-    public void create(Device device) {
-        session.getDeviceService().create(device);
+    public Device create(Device device) {
+        return Optional.ofNullable(session.getDeviceRepository().create(device))
+                .orElseThrow(notFoundException());
     }
 
     @PUT
     public Device update(Device device) {
-        return Optional.ofNullable(session.getDeviceService().update(device))
+        return Optional.ofNullable(session.getDeviceRepository().update(device))
                 .orElseThrow(notFoundException());
     }
 }

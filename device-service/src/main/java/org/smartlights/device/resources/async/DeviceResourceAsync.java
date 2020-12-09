@@ -29,7 +29,7 @@ public class DeviceResourceAsync {
     @GET
     public Uni<Device> getByID() {
         return Uni.createFrom()
-                .item(session.getDeviceService().getByID(id))
+                .item(session.getDeviceRepository().getByID(id))
                 .onItem()
                 .ifNull()
                 .failWith(notFoundException(id));

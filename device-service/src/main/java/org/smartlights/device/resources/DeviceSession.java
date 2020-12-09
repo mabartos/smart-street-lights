@@ -1,5 +1,6 @@
 package org.smartlights.device.resources;
 
+import org.smartlights.device.entity.DeviceRepository;
 import org.smartlights.device.services.DeviceService;
 
 import javax.enterprise.context.RequestScoped;
@@ -11,10 +12,17 @@ public class DeviceSession {
     @Inject
     DeviceService deviceService;
 
+    @Inject
+    DeviceRepository deviceRepository;
+
     private Long actualDeviceID;
 
     public DeviceService getDeviceService() {
         return deviceService;
+    }
+
+    public DeviceRepository getDeviceRepository() {
+        return deviceRepository;
     }
 
     public Long getActualDeviceID() {

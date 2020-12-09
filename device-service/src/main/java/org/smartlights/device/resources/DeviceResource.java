@@ -28,13 +28,13 @@ public class DeviceResource {
 
     @GET
     public Device getByID() {
-        return Optional.ofNullable(session.getDeviceService().getByID(id))
+        return Optional.ofNullable(session.getDeviceRepository().getByID(id))
                 .orElseThrow(notFoundException(id));
     }
 
     @DELETE
     public Response delete() {
-        if (session.getDeviceService().deleteByID(id)) {
+        if (session.getDeviceRepository().deleteByID(id)) {
             return Response.ok().build();
         }
         throw new NotFoundException(getNotFoundMessage(id));
