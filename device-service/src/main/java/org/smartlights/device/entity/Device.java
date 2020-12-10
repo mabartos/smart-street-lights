@@ -2,6 +2,7 @@ package org.smartlights.device.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.vertx.core.impl.ConcurrentHashSet;
 import org.smartlights.device.utils.DeviceType;
 
 import javax.persistence.Column;
@@ -31,6 +32,9 @@ public class Device extends PanacheEntity {
     public String streetID;
 
     @Column
+    public Long parentID;
+
+    @Column
     public DeviceType type;
 
     @Version
@@ -38,7 +42,7 @@ public class Device extends PanacheEntity {
 
     @ElementCollection
     @JsonIgnore
-    public Set<String> neighborsID;
+    public Set<Long> neighborsID = new ConcurrentHashSet<Long>();
 
     public boolean equals(Object object) {
         if (!(object instanceof Device))
@@ -51,10 +55,11 @@ public class Device extends PanacheEntity {
                 && serialNo.equals(device.serialNo)
                 && cityID.equals(device.cityID)
                 && streetID.equals(device.streetID)
+                && parentID.equals(device.parentID)
                 && type.equals(device.type);
     }
 
     public int hashCode() {
-        return Objects.hash(id, serialNo, cityID, streetID, type);
+        return Objects.hash(id, serialNo, cityID, streetID, parentID, type);
     }
 }

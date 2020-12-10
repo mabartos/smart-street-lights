@@ -6,8 +6,12 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Transactional
 @ApplicationScoped
 public class DeviceRepository implements PanacheRepository<Device>, DeviceRepositoryModel {
 
@@ -22,6 +26,16 @@ public class DeviceRepository implements PanacheRepository<Device>, DeviceReposi
 
     public Device getBySerialNo(String serialNo) {
         return find("serialNo", serialNo).firstResult();
+    }
+
+    @Override
+    public Stream<Device> getAllFromSetID(Set<Long> deviceSet) {
+        return list("id in ?1", deviceSet).stream();
+    }
+
+    @Override
+    public Stream<Device> getAllFromSetID(Stream<Long> deviceSet) {
+        return getAllFromSetID(deviceSet.collect(Collectors.toSet()));
     }
 
     public Stream<Device> getAllFromStreet(String streetID, Integer firstResult, Integer maxResults) {

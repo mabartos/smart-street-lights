@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.smartlights.device.utils.DeviceErrorMessages.getNotFoundMessage;
 import static org.smartlights.device.utils.DeviceErrorMessages.notFoundException;
@@ -18,7 +19,7 @@ import static org.smartlights.device.utils.DeviceErrorMessages.notFoundException
 @Consumes(MediaType.APPLICATION_JSON)
 public class DeviceResource {
 
-    private DeviceSession session;
+    private final DeviceSession session;
     private final Long id;
 
     public DeviceResource(DeviceSession session) {
@@ -39,5 +40,7 @@ public class DeviceResource {
         }
         throw new NotFoundException(getNotFoundMessage(id));
     }
+
+
 
 }

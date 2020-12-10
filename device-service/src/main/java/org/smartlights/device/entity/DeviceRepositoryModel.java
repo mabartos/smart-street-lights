@@ -1,5 +1,6 @@
 package org.smartlights.device.entity;
 
+import java.util.Set;
 import java.util.stream.Stream;
 
 public interface DeviceRepositoryModel {
@@ -9,6 +10,10 @@ public interface DeviceRepositoryModel {
     Device getByID(Long id);
 
     Device getBySerialNo(String serialNo);
+
+    Stream<Device> getAllFromSetID(Set<Long> deviceSet);
+
+    Stream<Device> getAllFromSetID(Stream<Long> deviceSet);
 
     Stream<Device> getAll(Integer firstResult, Integer maxResults);
 
