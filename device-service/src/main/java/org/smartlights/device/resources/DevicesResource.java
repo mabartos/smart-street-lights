@@ -1,6 +1,6 @@
 package org.smartlights.device.resources;
 
-import org.smartlights.device.entity.Device;
+import org.smartlights.device.entity.DeviceEntity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -35,42 +35,42 @@ public class DevicesResource {
 
     @GET
     @Path("/serial/{serialNo}")
-    public Device getBySerialNo(@PathParam("serialNo") String serialNo) {
+    public DeviceEntity getBySerialNo(@PathParam("serialNo") String serialNo) {
         return session.getDeviceRepository().getBySerialNo(serialNo);
     }
 
     @GET
-    public Stream<Device> getAll(@QueryParam("firstResult") Integer firstResult,
-                                 @QueryParam("maxResults") Integer maxResults) {
+    public Stream<DeviceEntity> getAll(@QueryParam("firstResult") Integer firstResult,
+                                       @QueryParam("maxResults") Integer maxResults) {
         return session.getDeviceRepository().getAll(firstResult, maxResults);
     }
 
     // Lately, it'd be better from street service
     @GET
     @Path("/fromStreet/{streetID}")
-    public Stream<Device> getAllFromStreet(@PathParam("streetID") String streetID,
-                                           @QueryParam("firstResult") Integer firstResult,
-                                           @QueryParam("maxResults") Integer maxResults) {
+    public Stream<DeviceEntity> getAllFromStreet(@PathParam("streetID") String streetID,
+                                                 @QueryParam("firstResult") Integer firstResult,
+                                                 @QueryParam("maxResults") Integer maxResults) {
         return session.getDeviceRepository().getAllFromStreet(streetID, firstResult, maxResults);
     }
 
     @GET
     @Path("/fromCity/{cityID}")
-    public Stream<Device> getAllFromCity(@PathParam("cityID") String cityID,
-                                         @QueryParam("firstResult") Integer firstResult,
-                                         @QueryParam("maxResults") Integer maxResults) {
+    public Stream<DeviceEntity> getAllFromCity(@PathParam("cityID") String cityID,
+                                               @QueryParam("firstResult") Integer firstResult,
+                                               @QueryParam("maxResults") Integer maxResults) {
         return session.getDeviceRepository().getAllFromCity(cityID, firstResult, maxResults);
     }
 
     @POST
-    public Device create(Device device) {
-        return Optional.ofNullable(session.getDeviceRepository().create(device))
+    public DeviceEntity create(DeviceEntity deviceEntity) {
+        return Optional.ofNullable(session.getDeviceRepository().create(deviceEntity))
                 .orElseThrow(notFoundException());
     }
 
     @PUT
-    public Device update(Device device) {
-        return Optional.ofNullable(session.getDeviceRepository().update(device))
+    public DeviceEntity update(DeviceEntity deviceEntity) {
+        return Optional.ofNullable(session.getDeviceRepository().update(deviceEntity))
                 .orElseThrow(notFoundException());
     }
 }

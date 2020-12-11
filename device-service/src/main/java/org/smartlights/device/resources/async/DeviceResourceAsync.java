@@ -1,7 +1,7 @@
 package org.smartlights.device.resources.async;
 
 import io.smallrye.mutiny.Uni;
-import org.smartlights.device.entity.Device;
+import org.smartlights.device.entity.DeviceEntity;
 import org.smartlights.device.resources.DeviceResource;
 import org.smartlights.device.resources.DeviceSession;
 
@@ -27,7 +27,7 @@ public class DeviceResourceAsync {
     }
 
     @GET
-    public Uni<Device> getByID() {
+    public Uni<DeviceEntity> getByID() {
         return Uni.createFrom()
                 .item(session.getDeviceRepository().getByID(id))
                 .onItem()

@@ -1,6 +1,6 @@
 package org.smartlights.device.resources;
 
-import org.smartlights.device.entity.Device;
+import org.smartlights.device.entity.DeviceEntity;
 import org.smartlights.device.entity.NeighborsRepository;
 
 import javax.ws.rs.Consumes;
@@ -39,7 +39,7 @@ public class NeighborsResource {
     }
 
     @GET
-    public Stream<Device> getAll() {
+    public Stream<DeviceEntity> getAll() {
         return Optional.ofNullable(neighborsRepository.getAll(deviceID))
                 .orElseGet(Stream::empty);
     }
@@ -52,7 +52,7 @@ public class NeighborsResource {
 
     @GET
     @Path("/{id}")
-    public Device getByID(@PathParam("id") Long id) {
+    public DeviceEntity getByID(@PathParam("id") Long id) {
         return Optional.ofNullable(neighborsRepository.getByID(deviceID, id))
                 .orElseThrow(notFoundException());
     }

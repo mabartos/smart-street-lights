@@ -1,6 +1,6 @@
 package org.smartlights.device.resources;
 
-import org.smartlights.device.entity.Device;
+import org.smartlights.device.entity.DeviceEntity;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -10,7 +10,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.smartlights.device.utils.DeviceErrorMessages.getNotFoundMessage;
 import static org.smartlights.device.utils.DeviceErrorMessages.notFoundException;
@@ -28,7 +27,7 @@ public class DeviceResource {
     }
 
     @GET
-    public Device getByID() {
+    public DeviceEntity getByID() {
         return Optional.ofNullable(session.getDeviceRepository().getByID(id))
                 .orElseThrow(notFoundException(id));
     }

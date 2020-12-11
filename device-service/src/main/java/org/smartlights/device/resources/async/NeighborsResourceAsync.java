@@ -2,7 +2,7 @@ package org.smartlights.device.resources.async;
 
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
-import org.smartlights.device.entity.Device;
+import org.smartlights.device.entity.DeviceEntity;
 import org.smartlights.device.entity.NeighborsRepository;
 import org.smartlights.device.resources.DeviceSession;
 
@@ -36,7 +36,7 @@ public class NeighborsResourceAsync {
     }
 
     @GET
-    public Multi<Device> getAll() {
+    public Multi<DeviceEntity> getAll() {
         return Multi.createFrom().items(neighborsRepository.getAll(deviceID));
     }
 
@@ -48,7 +48,7 @@ public class NeighborsResourceAsync {
 
     @GET
     @Path("/{id}")
-    public Uni<Device> getByID(@PathParam("id") Long id) {
+    public Uni<DeviceEntity> getByID(@PathParam("id") Long id) {
         return Uni.createFrom()
                 .item(neighborsRepository.getByID(deviceID, id))
                 .onItem()

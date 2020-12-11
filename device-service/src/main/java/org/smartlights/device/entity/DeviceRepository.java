@@ -13,33 +13,33 @@ import java.util.stream.Stream;
 
 @Transactional
 @ApplicationScoped
-public class DeviceRepository implements PanacheRepository<Device>, DeviceRepositoryModel {
+public class DeviceRepository implements PanacheRepository<DeviceEntity>, DeviceRepositoryModel {
 
-    public Device create(Device device) {
-        persistAndFlush(device);
-        return getBySerialNo(device.serialNo);
+    public DeviceEntity create(DeviceEntity deviceEntity) {
+        persistAndFlush(deviceEntity);
+        return getBySerialNo(deviceEntity.serialNo);
     }
 
-    public Device getByID(Long id) {
+    public DeviceEntity getByID(Long id) {
         return findById(id);
     }
 
-    public Device getBySerialNo(String serialNo) {
+    public DeviceEntity getBySerialNo(String serialNo) {
         return find("serialNo", serialNo).firstResult();
     }
 
     @Override
-    public Stream<Device> getAllFromSetID(Set<Long> deviceSet) {
+    public Stream<DeviceEntity> getAllFromSetID(Set<Long> deviceSet) {
         return list("id in ?1", deviceSet).stream();
     }
 
     @Override
-    public Stream<Device> getAllFromSetID(Stream<Long> deviceSet) {
+    public Stream<DeviceEntity> getAllFromSetID(Stream<Long> deviceSet) {
         return getAllFromSetID(deviceSet.collect(Collectors.toSet()));
     }
 
-    public Stream<Device> getAllFromStreet(String streetID, Integer firstResult, Integer maxResults) {
-        TypedQuery<Device> query = getEntityManager().createNamedQuery("getDevicesFromStreet", Device.class);
+    public Stream<DeviceEntity> getAllFromStreet(String streetID, Integer firstResult, Integer maxResults) {
+        TypedQuery<DeviceEntity> query = getEntityManager().createNamedQuery("getDevicesFromStreet", DeviceEntity.class);
         query.setParameter("streetID", streetID);
         query.setFirstResult(firstResult);
         query.setMaxResults(maxResults);
@@ -49,8 +49,8 @@ public class DeviceRepository implements PanacheRepository<Device>, DeviceReposi
     }
 
     @Override
-    public Stream<Device> getAllFromCity(String cityID, Integer firstResult, Integer maxResults) {
-        TypedQuery<Device> query = getEntityManager().createNamedQuery("getDevicesFromCity", Device.class);
+    public Stream<DeviceEntity> getAllFromCity(String cityID, Integer firstResult, Integer maxResults) {
+        TypedQuery<DeviceEntity> query = getEntityManager().createNamedQuery("getDevicesFromCity", DeviceEntity.class);
         query.setParameter("cityID", cityID);
         query.setFirstResult(firstResult);
         query.setMaxResults(maxResults);
@@ -59,17 +59,17 @@ public class DeviceRepository implements PanacheRepository<Device>, DeviceReposi
         return query.getResultList().stream();
     }
 
-    public Stream<Device> getAll(Integer firstResult, Integer maxResults) {
-        PanacheQuery<Device> query = findAll();
+    public Stream<DeviceEntity> getAll(Integer firstResult, Integer maxResults) {
+        PanacheQuery<DeviceEntity> query = findAll();
         if (firstResult != null && maxResults != null) {
             query.page(firstResult, maxResults);
         }
         return query.stream();
     }
 
-    public boolean deleteDevice(Device device) {
-        if (isPersistent(device)) {
-            delete(device);
+    public boolean deleteDevice(DeviceEntity deviceEntity) {
+        if (isPersistent(deviceEntity)) {
+            delete(deviceEntity);
             return true;
         }
         return false;
@@ -79,11 +79,11 @@ public class DeviceRepository implements PanacheRepository<Device>, DeviceReposi
         return deleteById(id);
     }
 
-    public Device update(Device device) {
-        return Panache.getEntityManager().merge(device);
+    public DeviceEntity update(DeviceEntity deviceEntity) {
+        return Panache.getEntityManager().merge(deviceEntity);
     }
 
-    private static TypedQuery<Device> pagination(TypedQuery<Device> query, Integer firstResult, Integer maxResults) {
+    private static TypedQuery<DeviceEntity> pagination(TypedQuery<DeviceEntity> query, Integer firstResult, Integer maxResults) {
         if (firstResult != null) {
             query.setFirstResult(firstResult);
         }

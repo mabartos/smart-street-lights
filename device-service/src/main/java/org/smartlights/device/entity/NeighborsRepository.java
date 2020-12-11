@@ -15,51 +15,52 @@ public class NeighborsRepository implements NeighborsRepositoryModel {
 
     @Override
     public Stream<Long> getAllID(Long parentID) {
-        return Optional.ofNullable(deviceRepository.getByID(parentID).neighborsID.stream())
+        return Optional.of(deviceRepository.getByID(parentID).neighbors.stream().map(f -> f.id))
                 .orElseGet(Stream::empty);
     }
 
     @Override
-    public Stream<Device> getAll(Long parentID) {
+    public Stream<DeviceEntity> getAll(Long parentID) {
         return Optional.ofNullable(deviceRepository.getAllFromSetID(getAllID(parentID)))
                 .orElseGet(Stream::empty);
     }
 
     @Override
-    public Device getByID(Long parentID, Long id) {
-        Device device = deviceRepository.getByID(id);
-        return Optional.ofNullable(device)
-                .filter(f -> f.parentID.equals(parentID))
+    public DeviceEntity getByID(Long parentID, Long id) {
+        DeviceEntity deviceEntity = deviceRepository.getByID(id);
+        return Optional.ofNullable(deviceEntity)
+                .filter(f -> f.parent != null)
+                .filter(f -> f.parent.id.equals(parentID))
                 .orElse(null);
     }
 
     @Override
     public boolean addNeighbor(Long parentID, Long id) {
-        Device parent = deviceRepository.getByID(parentID);
-        Device device = deviceRepository.getByID(id);
+        DeviceEntity parent = deviceRepository.getByID(parentID);
+        DeviceEntity deviceEntity = deviceRepository.getByID(id);
 
-        if (device != null && parent != null) {
-            device.parentID = parentID;
-            return parent.neighborsID.add(id);
+        if (deviceEntity != null && parent != null) {
+            deviceEntity.parent.id = parentID;
+            return parent.neighbors.add(deviceEntity);
         }
         return false;
     }
 
     @Override
     public boolean removeNeighbor(Long parentID, Long id) {
-        Device parent = deviceRepository.getByID(parentID);
-        Device device = deviceRepository.getByID(id);
+        DeviceEntity parent = deviceRepository.getByID(parentID);
+        DeviceEntity deviceEntity = deviceRepository.getByID(id);
 
-        if (device != null && parent != null) {
-            device.parentID = null;
-            return parent.neighborsID.remove(id);
+        if (deviceEntity != null && parent != null) {
+            deviceEntity.parent = null;
+            return parent.neighbors.remove(deviceEntity);
         }
         return false;
     }
 
     @Override
     public Integer getNeighborsCount(Long parentID) {
-        Device parent = deviceRepository.getByID(parentID);
-        return parent != null ? parent.neighborsID.size() : 0;
+        DeviceEntity parent = deviceRepository.getByID(parentID);
+        return parent != null ? parent.neighbors.size() : 0;
     }
 }

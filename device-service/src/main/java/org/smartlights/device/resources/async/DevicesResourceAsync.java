@@ -2,7 +2,7 @@ package org.smartlights.device.resources.async;
 
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
-import org.smartlights.device.entity.Device;
+import org.smartlights.device.entity.DeviceEntity;
 import org.smartlights.device.resources.DeviceSession;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -29,14 +29,14 @@ public class DevicesResourceAsync {
     DeviceSession session;
 
     @GET
-    public Multi<Device> getAll(@QueryParam("firstResult") Integer firstResult,
-                                @QueryParam("maxResults") Integer maxResults) {
+    public Multi<DeviceEntity> getAll(@QueryParam("firstResult") Integer firstResult,
+                                      @QueryParam("maxResults") Integer maxResults) {
         return Multi.createFrom().items(session.getDeviceRepository().getAll(firstResult, maxResults));
     }
 
     @GET
     @Path("/serial/{serialNo}")
-    public Uni<Device> getBySerialNo(@PathParam("serialNo") String serialNo) {
+    public Uni<DeviceEntity> getBySerialNo(@PathParam("serialNo") String serialNo) {
         return Uni.createFrom()
                 .item(session.getDeviceRepository().getBySerialNo(serialNo))
                 .onItem()
@@ -46,35 +46,35 @@ public class DevicesResourceAsync {
     // Lately, it'd be better from street service
     @GET
     @Path("/fromStreet/{streetID}")
-    public Multi<Device> getAllFromStreet(@PathParam("streetID") String streetID,
-                                          @QueryParam("firstResult") Integer firstResult,
-                                          @QueryParam("maxResults") Integer maxResults) {
+    public Multi<DeviceEntity> getAllFromStreet(@PathParam("streetID") String streetID,
+                                                @QueryParam("firstResult") Integer firstResult,
+                                                @QueryParam("maxResults") Integer maxResults) {
         return Multi.createFrom()
                 .items(session.getDeviceRepository().getAllFromStreet(streetID, firstResult, maxResults));
     }
 
     @GET
     @Path("/fromCity/{cityID}")
-    public Multi<Device> getAllFromCity(@PathParam("cityID") String cityID,
-                                        @QueryParam("firstResult") Integer firstResult,
-                                        @QueryParam("maxResults") Integer maxResults) {
+    public Multi<DeviceEntity> getAllFromCity(@PathParam("cityID") String cityID,
+                                              @QueryParam("firstResult") Integer firstResult,
+                                              @QueryParam("maxResults") Integer maxResults) {
         return Multi.createFrom()
                 .items(session.getDeviceRepository().getAllFromCity(cityID, firstResult, maxResults));
     }
 
     @POST
-    public Uni<Device> create(Device device) {
+    public Uni<DeviceEntity> create(DeviceEntity deviceEntity) {
         return Uni.createFrom()
-                .item(session.getDeviceRepository().create(device))
+                .item(session.getDeviceRepository().create(deviceEntity))
                 .onItem()
                 .ifNull()
                 .failWith(notFoundException());
     }
 
     @PUT
-    public Uni<Device> update(Device device) {
+    public Uni<DeviceEntity> update(DeviceEntity deviceEntity) {
         return Uni.createFrom()
-                .item(session.getDeviceRepository().update(device))
+                .item(session.getDeviceRepository().update(deviceEntity))
                 .onItem()
                 .ifNull()
                 .failWith(notFoundException());

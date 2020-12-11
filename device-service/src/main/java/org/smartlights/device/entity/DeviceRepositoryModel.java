@@ -5,26 +5,26 @@ import java.util.stream.Stream;
 
 public interface DeviceRepositoryModel {
 
-    Device create(Device device);
+    DeviceEntity create(DeviceEntity deviceEntity);
 
-    Device getByID(Long id);
+    DeviceEntity getByID(Long id);
 
-    Device getBySerialNo(String serialNo);
+    DeviceEntity getBySerialNo(String serialNo);
 
-    Stream<Device> getAllFromSetID(Set<Long> deviceSet);
+    Stream<DeviceEntity> getAllFromSetID(Set<Long> deviceSet);
 
-    Stream<Device> getAllFromSetID(Stream<Long> deviceSet);
+    Stream<DeviceEntity> getAllFromSetID(Stream<Long> deviceSet);
 
-    Stream<Device> getAll(Integer firstResult, Integer maxResults);
+    Stream<DeviceEntity> getAll(Integer firstResult, Integer maxResults);
 
-    Stream<Device> getAllFromStreet(String streetID, Integer firstResult, Integer maxResults);
+    Stream<DeviceEntity> getAllFromStreet(String streetID, Integer firstResult, Integer maxResults);
 
-    Stream<Device> getAllFromCity(String cityID, Integer firstResult, Integer maxResults);
+    Stream<DeviceEntity> getAllFromCity(String cityID, Integer firstResult, Integer maxResults);
 
-    boolean deleteDevice(Device device);
+    boolean deleteDevice(DeviceEntity deviceEntity);
 
     boolean deleteByID(Long id);
 
-    Device update(Device device);
+    DeviceEntity update(DeviceEntity deviceEntity);
 
 }

@@ -6,9 +6,9 @@ public interface NeighborsRepositoryModel {
 
     Stream<Long> getAllID(Long parentID);
 
-    Stream<Device> getAll(Long parentID);
+    Stream<DeviceEntity> getAll(Long parentID);
 
-    Device getByID(Long parentID, Long id);
+    DeviceEntity getByID(Long parentID, Long id);
 
     boolean addNeighbor(Long parentID, Long id);
 
