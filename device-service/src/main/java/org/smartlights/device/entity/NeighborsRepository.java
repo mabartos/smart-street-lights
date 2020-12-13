@@ -15,13 +15,26 @@ public class NeighborsRepository implements NeighborsRepositoryModel {
 
     @Override
     public Stream<Long> getAllID(Long parentID) {
-        return Optional.of(deviceRepository.getByID(parentID).neighbors.stream().map(f -> f.id))
-                .orElseGet(Stream::empty);
+        return getAllID(parentID, null, null);
     }
 
     @Override
     public Stream<DeviceEntity> getAll(Long parentID) {
-        return Optional.ofNullable(deviceRepository.getAllFromSetID(getAllID(parentID)))
+        return getAll(parentID, null, null);
+    }
+
+    @Override
+    public Stream<Long> getAllID(Long parentID, Integer firstResult, Integer maxResults) {
+        return getAll(parentID, firstResult, maxResults).map(f -> f.id);
+    }
+
+    @Override
+    public Stream<DeviceEntity> getAll(Long parentID, Integer firstResult, Integer maxResults) {
+        return Optional.ofNullable(deviceRepository.getByID(parentID)
+                .neighbors
+                .stream()
+                .skip(firstResult != null ? firstResult : 0)
+                .limit(maxResults != null ? maxResults : Long.MAX_VALUE))
                 .orElseGet(Stream::empty);
     }
 

@@ -62,9 +62,9 @@ public class DeviceRepository implements PanacheRepository<DeviceEntity>, Device
     public Stream<DeviceEntity> getAll(Integer firstResult, Integer maxResults) {
         PanacheQuery<DeviceEntity> query = findAll();
         if (firstResult != null && maxResults != null) {
-            query.page(firstResult, maxResults);
+            query = query.page(firstResult, maxResults);
         }
-        return query.stream();
+        return query.list().stream();
     }
 
     public boolean deleteDevice(DeviceEntity deviceEntity) {

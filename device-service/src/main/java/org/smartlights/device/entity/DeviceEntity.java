@@ -1,5 +1,6 @@
 package org.smartlights.device.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.vertx.core.impl.ConcurrentHashSet;
 import org.smartlights.device.utils.DeviceType;
@@ -43,9 +44,11 @@ public class DeviceEntity extends PanacheEntity {
     @JoinColumn
     public DeviceEntity parent;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "parent")
     public Set<DeviceEntity> neighbors = new ConcurrentHashSet<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "device")
     public Set<DeviceDataEntity> data = new ConcurrentHashSet<>();
 

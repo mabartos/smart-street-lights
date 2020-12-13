@@ -27,7 +27,7 @@ public class DeviceDataEntity extends PanacheEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    public DeviceEntity deviceEntity;
+    public DeviceEntity device;
 
     public boolean equals(Object object) {
         if (!(object instanceof DeviceDataEntity))
@@ -40,10 +40,10 @@ public class DeviceDataEntity extends PanacheEntity {
                 && timestamp.equals(deviceData.timestamp)
                 && deviceType.equals(deviceData.deviceType)
                 && deviceSerialNo.equals(deviceData.deviceSerialNo)
-                && deviceEntity.equals(deviceData.deviceEntity);
+                && device.equals(deviceData.device);
     }
 
     public int hashCode() {
-        return Objects.hash(id, timestamp, deviceType, deviceSerialNo, deviceEntity);
+        return Objects.hash(id, timestamp, deviceType, deviceSerialNo, device);
     }
 }
