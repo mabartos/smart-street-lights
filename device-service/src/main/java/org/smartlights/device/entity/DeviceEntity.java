@@ -21,6 +21,8 @@ import java.util.Set;
 @Entity
 @Table(name = "DEVICES")
 @NamedQueries({
+        @NamedQuery(name = "getWholeDevice", query = "select device from DeviceEntity device join fetch device.neighbors join fetch device.parent join fetch device.data where device.id=:id"),
+        @NamedQuery(name = "getDeviceWithData", query = "select device from DeviceEntity device join fetch device.data where device.id=:id"),
         @NamedQuery(name = "getDevicesFromStreet", query = "select device from DeviceEntity device where device.streetID=:streetID"),
         @NamedQuery(name = "getDevicesFromCity", query = "select device from DeviceEntity device where device.cityID=:cityID")
 })
@@ -49,7 +51,7 @@ public class DeviceEntity extends PanacheEntity {
     public Set<DeviceEntity> neighbors = new ConcurrentHashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "device")
+    @OneToMany(mappedBy = "device", orphanRemoval = true)
     public Set<DeviceDataEntity> data = new ConcurrentHashSet<>();
 
     public boolean equals(Object object) {

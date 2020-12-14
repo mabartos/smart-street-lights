@@ -11,19 +11,38 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.smartlights.device.entity.EntityUtils.pagination;
+
 @Transactional
 @ApplicationScoped
 public class DeviceRepository implements PanacheRepository<DeviceEntity>, DeviceRepositoryModel {
 
+    @Override
     public DeviceEntity create(DeviceEntity deviceEntity) {
         persistAndFlush(deviceEntity);
         return getBySerialNo(deviceEntity.serialNo);
     }
 
+    @Override
     public DeviceEntity getByID(Long id) {
         return findById(id);
     }
 
+    @Override
+    public DeviceEntity getWholeByID(Long id) {
+        TypedQuery<DeviceEntity> entity = getEntityManager().createNamedQuery("getWholeDevice", DeviceEntity.class);
+        entity.setParameter("id", id);
+        return entity.getSingleResult();
+    }
+
+    @Override
+    public DeviceEntity getByIDWithData(Long id) {
+        TypedQuery<DeviceEntity> entity = getEntityManager().createNamedQuery("getDeviceWithData", DeviceEntity.class);
+        entity.setParameter("id", id);
+        return entity.getSingleResult();
+    }
+
+    @Override
     public DeviceEntity getBySerialNo(String serialNo) {
         return find("serialNo", serialNo).firstResult();
     }
@@ -59,6 +78,7 @@ public class DeviceRepository implements PanacheRepository<DeviceEntity>, Device
         return query.getResultList().stream();
     }
 
+    @Override
     public Stream<DeviceEntity> getAll(Integer firstResult, Integer maxResults) {
         PanacheQuery<DeviceEntity> query = findAll();
         if (firstResult != null && maxResults != null) {
@@ -67,6 +87,7 @@ public class DeviceRepository implements PanacheRepository<DeviceEntity>, Device
         return query.list().stream();
     }
 
+    @Override
     public boolean deleteDevice(DeviceEntity deviceEntity) {
         if (isPersistent(deviceEntity)) {
             delete(deviceEntity);
@@ -75,21 +96,13 @@ public class DeviceRepository implements PanacheRepository<DeviceEntity>, Device
         return false;
     }
 
+    @Override
     public boolean deleteByID(Long id) {
         return deleteById(id);
     }
 
+    @Override
     public DeviceEntity update(DeviceEntity deviceEntity) {
         return Panache.getEntityManager().merge(deviceEntity);
-    }
-
-    private static TypedQuery<DeviceEntity> pagination(TypedQuery<DeviceEntity> query, Integer firstResult, Integer maxResults) {
-        if (firstResult != null) {
-            query.setFirstResult(firstResult);
-        }
-        if (maxResults != null) {
-            query.setMaxResults(maxResults);
-        }
-        return query;
     }
 }

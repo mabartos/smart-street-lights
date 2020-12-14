@@ -9,6 +9,10 @@ public interface DeviceRepositoryModel {
 
     DeviceEntity getByID(Long id);
 
+    DeviceEntity getWholeByID(Long id);
+
+    DeviceEntity getByIDWithData(Long id);
+
     DeviceEntity getBySerialNo(String serialNo);
 
     Stream<DeviceEntity> getAllFromSetID(Set<Long> deviceSet);

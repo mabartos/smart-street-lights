@@ -2,6 +2,8 @@ package org.smartlights.device.dto;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.smartlights.device.entity.DeviceDataEntity;
+import org.smartlights.device.entity.DeviceDataRepository;
 import org.smartlights.device.entity.DeviceEntity;
 import org.smartlights.device.entity.DeviceRepository;
 import org.smartlights.device.entity.NeighborsRepository;
@@ -9,6 +11,7 @@ import org.smartlights.device.entity.NeighborsRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -17,6 +20,9 @@ public class DeviceSerializer {
 
     @Inject
     DeviceRepository deviceRepository;
+
+    @Inject
+    DeviceDataRepository deviceDataRepository;
 
     @Inject
     NeighborsRepository neighborsRepository;
@@ -38,7 +44,28 @@ public class DeviceSerializer {
 
     public DeviceDTO entityToModel(DeviceEntity deviceEntity) {
         DeviceDTO dto = mapper.convertValue(deviceEntity, DeviceDTO.class);
-        dto.neighborsID = neighborsRepository.getAllID(deviceEntity.id).collect(Collectors.toSet());
+        DeviceEntity found = Optional.ofNullable(deviceRepository.getWholeByID(deviceEntity.id)).orElse(null);
+        if (found != null) {
+            dto.parentID = Optional.ofNullable(found.parent.id).orElse(-1L);
+            dto.neighborsID = found.neighbors.stream()
+                    .filter(Objects::nonNull)
+                    .map(f -> f.id)
+                    .collect(Collectors.toSet());
+        }
+        return dto;
+    }
+
+    public DeviceDataEntity modelToEntity(DeviceDataDTO deviceDataDTO) {
+        DeviceDataEntity entity = mapper.convertValue(deviceDataDTO, DeviceDataEntity.class);
+        entity.device = Optional.ofNullable(deviceRepository.getByID(deviceDataDTO.deviceID)).orElse(null);
+        return entity;
+    }
+
+    public DeviceDataDTO entityToModel(DeviceDataEntity deviceDataEntity) {
+        DeviceDataDTO dto = mapper.convertValue(deviceDataEntity, DeviceDataDTO.class);
+        dto.deviceID = Optional.ofNullable(deviceDataRepository.getByIDWithParent(deviceDataEntity.device.id))
+                .map(f -> f.id)
+                .orElse(-1L);
         return dto;
     }
 }
