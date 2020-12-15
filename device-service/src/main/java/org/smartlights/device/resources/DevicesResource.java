@@ -1,8 +1,8 @@
 package org.smartlights.device.resources;
 
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.smartlights.device.dto.DeviceDTO;
-import org.smartlights.device.entity.DeviceEntity;
-import org.smartlights.device.resources.DeviceResource;
 import org.smartlights.device.utils.Constants;
 
 import javax.transaction.Transactional;

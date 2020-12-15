@@ -1,5 +1,7 @@
 package org.smartlights.device.resources.providers;
 
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.smartlights.device.dto.DeviceDTO;
 import org.smartlights.device.dto.DeviceSerializer;
 import org.smartlights.device.entity.DeviceEntity;
@@ -51,6 +53,7 @@ public class DevicesResourceProvider implements DevicesResource {
     }
 
     @GET
+    @Timed(name = "getAllDevices", description = "Get all devices", unit = MetricUnits.MILLISECONDS)
     public Stream<DeviceDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
                                     @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
         return session.getDeviceRepository()

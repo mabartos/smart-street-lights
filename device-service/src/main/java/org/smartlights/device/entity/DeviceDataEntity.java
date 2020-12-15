@@ -3,6 +3,7 @@ package org.smartlights.device.entity;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import org.smartlights.device.utils.DeviceType;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -37,10 +38,12 @@ public class DeviceDataEntity extends PanacheEntity {
     @JoinColumn
     public DeviceEntity device;
 
-    @Column(name = "VALUE")
-    @MapKeyColumn(name = "KEY")
     @ElementCollection
-    public Map<String, Object> values;
+    @CollectionTable(name = "device_data_values",
+            joinColumns = {@JoinColumn(name = "device_data_id", referencedColumnName = "id")})
+    @MapKeyColumn(name = "NAME")
+    @Column(name = "VALUE")
+    public Map<String, String> values;
 
     public boolean equals(Object object) {
         if (!(object instanceof DeviceDataEntity))

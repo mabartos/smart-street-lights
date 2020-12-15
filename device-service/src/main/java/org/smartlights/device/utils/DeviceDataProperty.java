@@ -1,5 +1,7 @@
 package org.smartlights.device.utils;
 
+import java.util.Arrays;
+
 public enum DeviceDataProperty {
     INTENSITY("intensity", Byte.class),
     AMBIENT("ambient", Integer.class),
@@ -19,5 +21,10 @@ public enum DeviceDataProperty {
 
     public Class<?> getClazz() {
         return clazz;
+    }
+
+    public static boolean containsProperty(String name) {
+        return Arrays.stream(DeviceDataProperty.values()).
+                anyMatch(f -> f.getName().equals(name));
     }
 }

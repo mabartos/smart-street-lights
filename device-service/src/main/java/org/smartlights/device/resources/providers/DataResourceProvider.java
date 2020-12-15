@@ -11,11 +11,13 @@ import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
 import java.util.stream.Stream;
 
@@ -34,6 +36,11 @@ public class DataResourceProvider implements DataResource {
         this.dataRepository = session.getDeviceDataRepository();
         this.parentID = session.getActualDeviceID();
         this.serializer = session.getDeviceSerializer();
+    }
+
+    @POST
+    public Response saveData(DeviceDataDTO data) {
+        return session.getDeviceService().handleData(parentID, data) ? Response.ok().build() : Response.status(Response.Status.BAD_REQUEST).build();
     }
 
     @GET

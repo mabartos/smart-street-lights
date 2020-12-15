@@ -3,6 +3,7 @@ package org.smartlights.device.entity;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -30,18 +31,16 @@ public class NeighborsRepository implements NeighborsRepositoryModel {
 
     @Override
     public Stream<DeviceEntity> getAll(Long parentID, Integer firstResult, Integer maxResults) {
-        return Optional.ofNullable(deviceRepository.getByID(parentID)
-                .neighbors
-                .stream()
-                .skip(firstResult != null ? firstResult : 0)
-                .limit(maxResults != null ? maxResults : Long.MAX_VALUE))
+        return Optional.ofNullable(deviceRepository.getByID(parentID))
+                .map(f -> f.neighbors)
+                .map(Collection::stream)
+                .map(f -> EntityUtils.pagination(f, firstResult, maxResults))
                 .orElseGet(Stream::empty);
     }
 
     @Override
     public DeviceEntity getByID(Long parentID, Long id) {
-        DeviceEntity deviceEntity = deviceRepository.getByID(id);
-        return Optional.ofNullable(deviceEntity)
+        return Optional.ofNullable(deviceRepository.getByID(id))
                 .filter(f -> f.parent != null)
                 .filter(f -> f.parent.id.equals(parentID))
                 .orElse(null);

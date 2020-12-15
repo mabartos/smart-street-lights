@@ -3,8 +3,11 @@ package org.smartlights.device.entity;
 import io.quarkus.hibernate.orm.panache.Panache;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import org.hibernate.exception.ConstraintViolationException;
+import org.smartlights.device.utils.ConflictException;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.Set;
@@ -19,27 +22,45 @@ public class DeviceRepository implements PanacheRepository<DeviceEntity>, Device
 
     @Override
     public DeviceEntity create(DeviceEntity deviceEntity) {
-        persistAndFlush(deviceEntity);
-        return getBySerialNo(deviceEntity.serialNo);
+        try {
+            persistAndFlush(deviceEntity);
+            return getBySerialNo(deviceEntity.serialNo);
+        } catch (ConstraintViolationException e) {
+            throw new ConflictException(e.getConstraintName());
+        }
     }
 
     @Override
     public DeviceEntity getByID(Long id) {
-        return findById(id);
+        try {
+            TypedQuery<DeviceEntity> entity = getEntityManager().createNamedQuery("getDeviceByID", DeviceEntity.class);
+            entity.setParameter("id", id);
+            return entity.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override
     public DeviceEntity getWholeByID(Long id) {
-        TypedQuery<DeviceEntity> entity = getEntityManager().createNamedQuery("getWholeDevice", DeviceEntity.class);
-        entity.setParameter("id", id);
-        return entity.getSingleResult();
+        try {
+            TypedQuery<DeviceEntity> entity = getEntityManager().createNamedQuery("getWholeDevice", DeviceEntity.class);
+            entity.setParameter("id", id);
+            return entity.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override
     public DeviceEntity getByIDWithData(Long id) {
-        TypedQuery<DeviceEntity> entity = getEntityManager().createNamedQuery("getDeviceWithData", DeviceEntity.class);
-        entity.setParameter("id", id);
-        return entity.getSingleResult();
+        try {
+            TypedQuery<DeviceEntity> entity = getEntityManager().createNamedQuery("getDeviceWithData", DeviceEntity.class);
+            entity.setParameter("id", id);
+            return entity.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override

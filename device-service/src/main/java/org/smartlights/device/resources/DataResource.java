@@ -7,11 +7,13 @@ import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
 import java.util.stream.Stream;
 
@@ -19,6 +21,9 @@ import java.util.stream.Stream;
 @Consumes(MediaType.APPLICATION_JSON)
 @Transactional
 public interface DataResource {
+
+    @POST
+    Response saveData(DeviceDataDTO data);
 
     @GET
     Stream<DeviceDataDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,

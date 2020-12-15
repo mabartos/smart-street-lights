@@ -1,9 +1,15 @@
 package org.smartlights.device.entity;
 
+import org.smartlights.device.dto.DeviceDataDTO;
+
 import java.sql.Timestamp;
 import java.util.stream.Stream;
 
 public interface DeviceDataRepositoryModel {
+
+    boolean saveData(Long parentID, DeviceDataDTO data);
+
+    boolean saveData(DeviceDataDTO data);
 
     Stream<DeviceDataEntity> getAllFromParent(Long parentID);
 

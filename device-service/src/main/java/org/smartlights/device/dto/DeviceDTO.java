@@ -1,7 +1,9 @@
 package org.smartlights.device.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.vertx.core.impl.ConcurrentHashSet;
 import org.smartlights.device.utils.DeviceType;
 
 import java.io.Serializable;
@@ -15,5 +17,6 @@ public class DeviceDTO implements Serializable {
     public Long streetID;
     public DeviceType type;
     public Long parentID;
-    public Set<Long> neighborsID;
+    @JsonIgnore
+    public Set<Long> neighborsID = new ConcurrentHashSet<>();
 }

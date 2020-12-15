@@ -5,11 +5,13 @@ import org.smartlights.device.dto.DeviceDTO;
 import org.smartlights.device.dto.DeviceSerializer;
 import org.smartlights.device.resources.DeviceSession;
 import org.smartlights.device.resources.async.DeviceResourceAsync;
+import org.smartlights.device.resources.async.NeighborsResourceAsync;
 import org.smartlights.device.resources.providers.DeviceResourceProvider;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -28,6 +30,12 @@ public class DeviceAsyncProvider implements DeviceResourceAsync {
         this.session = session;
         this.id = session.getActualDeviceID();
         this.serializer = session.getDeviceSerializer();
+    }
+
+    @GET
+    @Path("/neighbors")
+    public NeighborsResourceAsync forwardToDevice() {
+        return new NeighborsAsyncProvider(session);
     }
 
     @GET
