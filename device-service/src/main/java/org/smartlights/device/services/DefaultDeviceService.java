@@ -7,9 +7,12 @@ import org.smartlights.device.utils.DeviceDataProperty;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @ApplicationScoped
 public class DefaultDeviceService implements DeviceService {
+
+    private static final Logger logger = Logger.getLogger(DefaultDeviceService.class.getName());
 
     @Inject
     DeviceDataRepository dataRepository;
@@ -21,12 +24,13 @@ public class DefaultDeviceService implements DeviceService {
 
     @Override
     public boolean handleData(Long deviceID, DeviceDataDTO data) {
-        System.out.println("Data:");
-        System.out.println("device: " + Optional.ofNullable(deviceID).orElseGet(() -> data.deviceID));
+        logger.info("---------DATA----------");
+        logger.info("Device: " + Optional.ofNullable(deviceID).orElseGet(() -> data.deviceID));
         data.values.entrySet()
                 .stream()
                 .filter(entry -> DeviceDataProperty.containsProperty(entry.getKey()))
-                .forEach(f -> System.out.println("Key: " + f.getKey() + ", Value: " + f.getValue()));
+                .forEach(f -> logger.info("Key: " + f.getKey() + ", Value: " + f.getValue()));
+        logger.info("-----------------------");
         return dataRepository.saveData(data);
     }
 }

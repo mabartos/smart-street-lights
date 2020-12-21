@@ -17,8 +17,8 @@ public class ExceptionHandler implements ExceptionMapper<Throwable> {
     public Response toResponse(Throwable exception) {
         Response response;
         logger.warning(Optional.ofNullable(exception.getCause()).map(Throwable::toString).orElseGet(exception::getMessage));
-        if (exception.getCause() instanceof WebApplicationException) {
-            WebApplicationException webEx = (WebApplicationException) exception.getCause();
+        if (isWebApplicationException(exception)) {
+            WebApplicationException webEx = getWebApplicationException(exception);
             response = Response.status(webEx.getResponse().getStatus())
                     .entity(webEx.getMessage())
                     .type(MediaType.TEXT_PLAIN)
@@ -30,5 +30,13 @@ public class ExceptionHandler implements ExceptionMapper<Throwable> {
                     .build();
         }
         return response;
+    }
+
+    private boolean isWebApplicationException(Throwable exception) {
+        return exception instanceof WebApplicationException || exception.getCause() instanceof WebApplicationException;
+    }
+
+    private WebApplicationException getWebApplicationException(Throwable exception) {
+        return (WebApplicationException) Optional.ofNullable(exception.getCause()).orElse(exception);
     }
 }

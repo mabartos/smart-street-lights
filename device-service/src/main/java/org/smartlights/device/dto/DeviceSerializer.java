@@ -60,13 +60,30 @@ public class DeviceSerializer {
     }
 
     public DeviceDataDTO entityToModel(DeviceDataEntity deviceDataEntity) {
+        return entityToModel(deviceDataEntity, null);
+    }
+
+    public DeviceDataDTO entityToModel(DeviceDataEntity deviceDataEntity, Long deviceID) {
         DeviceDataDTO dto = mapper.convertValue(deviceDataEntity, DeviceDataDTO.class);
-        dto.deviceID = Optional.ofNullable(deviceDataRepository.getByIDWithParent(deviceDataEntity.device.id))
-                .map(f -> f.id)
-                .orElse(-1L);
+        dto.deviceID = Optional.ofNullable(deviceID).orElseGet(() -> getDeviceIDFromEntity(deviceDataEntity));
         dto.values = deviceDataEntity.values.entrySet()
                 .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, DeviceDataProperty::convertToTypeByKey));
         return dto;
+    }
+
+    public DeviceDataDTO setUpActualDeviceProperties(DeviceDataDTO dataDTO, DeviceEntity deviceEntity) {
+        if (deviceEntity == null)
+            return dataDTO;
+
+        dataDTO.deviceID = deviceEntity.id;
+        dataDTO.serialNo = deviceEntity.serialNo;
+        return dataDTO;
+    }
+
+    private Long getDeviceIDFromEntity(DeviceDataEntity deviceDataEntity) {
+        return Optional.ofNullable(deviceDataRepository.getByIDWithParent(deviceDataEntity.device.id))
+                .map(f -> f.id)
+                .orElse(-1L);
     }
 }

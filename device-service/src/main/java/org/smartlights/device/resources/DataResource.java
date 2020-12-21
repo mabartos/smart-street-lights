@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 public interface DataResource {
 
     @POST
-    Response saveData(DeviceDataDTO data);
+    Response handleData(DeviceDataDTO data);
 
     @GET
     Stream<DeviceDataDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,

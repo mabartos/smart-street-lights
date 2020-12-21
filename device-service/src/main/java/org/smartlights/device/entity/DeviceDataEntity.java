@@ -25,7 +25,8 @@ import java.util.Objects;
 @Table(name = "DEVICE_DATA")
 @NamedQueries({
         @NamedQuery(name = "removeDeviceDataByIDs", query = "delete from DeviceDataEntity device where device.id in :ids"),
-        @NamedQuery(name = "getDeviceDataWithParent", query = "select device from DeviceDataEntity device left join fetch device.device where device.id =:id")})
+        @NamedQuery(name = "getDeviceDataWithParent", query = "select device from DeviceDataEntity device left join fetch device.device where device.id =:id"),
+})
 public class DeviceDataEntity extends PanacheEntity {
 
     @Column

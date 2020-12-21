@@ -2,6 +2,7 @@ package org.smartlights.device.resources.providers;
 
 import org.smartlights.device.dto.DeviceDataDTO;
 import org.smartlights.device.dto.DeviceSerializer;
+import org.smartlights.device.entity.DeviceDataEntity;
 import org.smartlights.device.entity.repository.DeviceDataRepository;
 import org.smartlights.device.resources.DataResource;
 import org.smartlights.device.resources.DeviceSession;
@@ -41,14 +42,15 @@ public class DataResourceProvider implements DataResource {
     }
 
     @POST
-    public Response saveData(DeviceDataDTO data) {
+    public Response handleData(DeviceDataDTO data) {
+        data = serializer.setUpActualDeviceProperties(data, session.getDeviceRepository().getByID(parentID));
         return session.getDeviceService().handleData(parentID, data) ? Response.ok().build() : Response.status(Response.Status.BAD_REQUEST).build();
     }
 
     @GET
     public Stream<DeviceDataDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
                                         @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
-        return dataRepository.getAllFromParent(parentID, firstResult, maxResults).map(serializer::entityToModel);
+        return addParentID(dataRepository.getAllFromParent(parentID, firstResult, maxResults));
     }
 
     @GET
@@ -56,7 +58,7 @@ public class DataResourceProvider implements DataResource {
     public Stream<DeviceDataDTO> getAllRecentThan(@PathParam("timestamp") Timestamp timestamp,
                                                   @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
                                                   @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
-        return dataRepository.getAllRecentThan(parentID, timestamp, firstResult, maxResults).map(serializer::entityToModel);
+        return addParentID(dataRepository.getAllRecentThan(parentID, timestamp, firstResult, maxResults));
     }
 
     @GET
@@ -64,12 +66,16 @@ public class DataResourceProvider implements DataResource {
     public Stream<DeviceDataDTO> getAllOlderThan(@PathParam("timestamp") Timestamp timestamp,
                                                  @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
                                                  @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
-        return dataRepository.getAllOlderThan(parentID, timestamp, firstResult, maxResults).map(serializer::entityToModel);
+        return addParentID(dataRepository.getAllOlderThan(parentID, timestamp, firstResult, maxResults));
     }
 
     @DELETE
     @Path("{timestamp}")
     public boolean removeOlderThan(@PathParam("timestamp") Timestamp timestamp) {
         return dataRepository.removeOlderThan(parentID, timestamp);
+    }
+
+    private Stream<DeviceDataDTO> addParentID(Stream<DeviceDataEntity> stream) {
+        return stream.map(f -> serializer.entityToModel(f, parentID));
     }
 }
