@@ -1,9 +1,9 @@
 package org.smartlights.device.resources;
 
 import org.smartlights.device.dto.DeviceSerializer;
-import org.smartlights.device.entity.DeviceDataRepository;
-import org.smartlights.device.entity.DeviceRepository;
-import org.smartlights.device.entity.NeighborsRepository;
+import org.smartlights.device.entity.repository.DeviceDataRepository;
+import org.smartlights.device.entity.repository.DeviceRepository;
+import org.smartlights.device.entity.repository.NeighborsRepository;
 import org.smartlights.device.services.DeviceService;
 
 import javax.enterprise.context.RequestScoped;

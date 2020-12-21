@@ -4,14 +4,11 @@ import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.smartlights.device.dto.DeviceDTO;
 import org.smartlights.device.dto.DeviceSerializer;
-import org.smartlights.device.entity.DeviceEntity;
 import org.smartlights.device.resources.DeviceResource;
 import org.smartlights.device.resources.DeviceSession;
 import org.smartlights.device.resources.DevicesResource;
 import org.smartlights.device.utils.Constants;
-import org.smartlights.device.utils.DeviceType;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -40,7 +37,6 @@ public class DevicesResourceProvider implements DevicesResource {
     @Inject
     DeviceSerializer serializer;
 
-    @GET
     @Path("/{id}")
     public DeviceResource forwardToDevice(@PathParam("id") Long id) {
         return new DeviceResourceProvider(session.setActualDeviceID(id));

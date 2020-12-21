@@ -2,11 +2,12 @@ package org.smartlights.device.resources.providers;
 
 import org.smartlights.device.dto.DeviceDataDTO;
 import org.smartlights.device.dto.DeviceSerializer;
-import org.smartlights.device.entity.DeviceDataRepository;
+import org.smartlights.device.entity.repository.DeviceDataRepository;
 import org.smartlights.device.resources.DataResource;
 import org.smartlights.device.resources.DeviceSession;
 import org.smartlights.device.utils.Constants;
 
+import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -24,6 +25,7 @@ import java.util.stream.Stream;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Transactional
+@RequestScoped
 public class DataResourceProvider implements DataResource {
 
     private final DeviceSession session;

@@ -1,14 +1,18 @@
-package org.smartlights.device.entity;
+package org.smartlights.device.entity.repository;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import org.smartlights.device.dto.DeviceDataDTO;
 import org.smartlights.device.dto.DeviceSerializer;
+import org.smartlights.device.entity.DeviceDataEntity;
+import org.smartlights.device.entity.DeviceEntity;
+import org.smartlights.device.entity.repository.model.DeviceDataRepositoryModel;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Optional;
@@ -19,6 +23,7 @@ import java.util.stream.Stream;
 import static org.smartlights.device.entity.EntityUtils.pagination;
 
 @ApplicationScoped
+@Transactional
 public class DeviceDataRepository implements PanacheRepository<DeviceDataEntity>, DeviceDataRepositoryModel {
 
     @Inject
@@ -43,6 +48,12 @@ public class DeviceDataRepository implements PanacheRepository<DeviceDataEntity>
     @Override
     public boolean saveData(DeviceDataDTO data) {
         return saveData(null, data);
+    }
+
+    @Override
+    public boolean saveData(DeviceDataEntity data) {
+        persistAndFlush(data);
+        return true;
     }
 
     @Override

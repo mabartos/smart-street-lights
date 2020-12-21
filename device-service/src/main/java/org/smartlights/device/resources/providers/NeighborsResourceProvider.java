@@ -2,7 +2,7 @@ package org.smartlights.device.resources.providers;
 
 import org.smartlights.device.dto.DeviceDTO;
 import org.smartlights.device.dto.DeviceSerializer;
-import org.smartlights.device.entity.NeighborsRepository;
+import org.smartlights.device.entity.repository.NeighborsRepository;
 import org.smartlights.device.resources.DeviceSession;
 import org.smartlights.device.resources.NeighborsResource;
 import org.smartlights.device.utils.Constants;

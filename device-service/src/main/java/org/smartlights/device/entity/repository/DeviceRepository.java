@@ -1,9 +1,11 @@
-package org.smartlights.device.entity;
+package org.smartlights.device.entity.repository;
 
 import io.quarkus.hibernate.orm.panache.Panache;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import org.hibernate.exception.ConstraintViolationException;
+import org.smartlights.device.entity.DeviceEntity;
+import org.smartlights.device.entity.repository.model.DeviceRepositoryModel;
 import org.smartlights.device.utils.ConflictException;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -102,9 +104,7 @@ public class DeviceRepository implements PanacheRepository<DeviceEntity>, Device
     @Override
     public Stream<DeviceEntity> getAll(Integer firstResult, Integer maxResults) {
         PanacheQuery<DeviceEntity> query = findAll();
-        if (firstResult != null && maxResults != null) {
-            query = query.page(firstResult, maxResults);
-        }
+        query = query.page(firstResult != null ? firstResult : 0, maxResults != null ? maxResults : PAGE_COUNT);
         return query.list().stream();
     }
 

@@ -1,9 +1,13 @@
-package org.smartlights.device.entity;
+package org.smartlights.device.entity.repository.model;
+
+import org.smartlights.device.entity.DeviceEntity;
 
 import java.util.Set;
 import java.util.stream.Stream;
 
 public interface DeviceRepositoryModel {
+
+    Integer PAGE_COUNT = 25;
 
     DeviceEntity create(DeviceEntity deviceEntity);
 

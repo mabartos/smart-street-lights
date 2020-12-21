@@ -1,4 +1,6 @@
-package org.smartlights.device.entity;
+package org.smartlights.device.entity.repository.model;
+
+import org.smartlights.device.entity.DeviceEntity;
 
 import java.util.stream.Stream;
 

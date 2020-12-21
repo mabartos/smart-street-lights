@@ -39,7 +39,6 @@ public class DevicesAsyncProvider implements DevicesResourceAsync {
     @Inject
     DeviceSerializer serializer;
 
-    @GET
     @Path("/{id}")
     public DeviceResourceAsync forwardToDevice(@PathParam("id") Long id) {
         return new DeviceAsyncProvider(session.setActualDeviceID(id));

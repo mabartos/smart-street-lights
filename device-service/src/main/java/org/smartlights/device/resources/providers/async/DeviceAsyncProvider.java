@@ -32,7 +32,6 @@ public class DeviceAsyncProvider implements DeviceResourceAsync {
         this.serializer = session.getDeviceSerializer();
     }
 
-    @GET
     @Path("/neighbors")
     public NeighborsResourceAsync forwardToDevice() {
         return new NeighborsAsyncProvider(session);

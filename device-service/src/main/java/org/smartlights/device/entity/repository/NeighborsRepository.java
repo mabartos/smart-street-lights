@@ -1,4 +1,8 @@
-package org.smartlights.device.entity;
+package org.smartlights.device.entity.repository;
+
+import org.smartlights.device.entity.DeviceEntity;
+import org.smartlights.device.entity.EntityUtils;
+import org.smartlights.device.entity.repository.model.NeighborsRepositoryModel;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

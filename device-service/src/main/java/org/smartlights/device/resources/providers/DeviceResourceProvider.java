@@ -5,6 +5,8 @@ import org.smartlights.device.resources.DataResource;
 import org.smartlights.device.resources.DeviceResource;
 import org.smartlights.device.resources.DeviceSession;
 
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -20,6 +22,8 @@ import static org.smartlights.device.utils.DeviceErrorMessages.notFoundException
 
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Transactional
+@RequestScoped
 public class DeviceResourceProvider implements DeviceResource {
 
     private final DeviceSession session;
@@ -44,10 +48,9 @@ public class DeviceResourceProvider implements DeviceResource {
         }
         throw new NotFoundException(getNotFoundMessage(id));
     }
-    
-    @GET
+
     @Path("/data")
-    public DataResource forwardToDataResource(DeviceSession session) {
-        return new DataResourceProvider(session);
+    public DataResource forwardToDataResource() {
+        return new DataResourceProvider(session.setActualDeviceID(id));
     }
 }

@@ -1,7 +1,7 @@
 package org.smartlights.device.services;
 
 import org.smartlights.device.dto.DeviceDataDTO;
-import org.smartlights.device.entity.DeviceDataRepository;
+import org.smartlights.device.entity.repository.DeviceDataRepository;
 import org.smartlights.device.utils.DeviceDataProperty;
 
 import javax.enterprise.context.ApplicationScoped;

@@ -2,6 +2,7 @@ package org.smartlights.device.resources;
 
 import org.smartlights.device.dto.DeviceDTO;
 
+import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.Response;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Transactional
 public interface DeviceResource {
 
     @GET
@@ -20,7 +22,6 @@ public interface DeviceResource {
     @DELETE
     Response delete();
 
-    @GET
     @Path("/data")
-    DataResource forwardToDataResource(DeviceSession session);
+    DataResource forwardToDataResource();
 }

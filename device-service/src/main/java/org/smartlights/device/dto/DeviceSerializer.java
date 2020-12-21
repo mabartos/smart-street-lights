@@ -3,14 +3,16 @@ package org.smartlights.device.dto;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.smartlights.device.entity.DeviceDataEntity;
-import org.smartlights.device.entity.DeviceDataRepository;
 import org.smartlights.device.entity.DeviceEntity;
-import org.smartlights.device.entity.DeviceRepository;
-import org.smartlights.device.entity.NeighborsRepository;
+import org.smartlights.device.entity.repository.DeviceDataRepository;
+import org.smartlights.device.entity.repository.DeviceRepository;
+import org.smartlights.device.entity.repository.NeighborsRepository;
+import org.smartlights.device.utils.DeviceDataProperty;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -51,14 +53,20 @@ public class DeviceSerializer {
     public DeviceDataEntity modelToEntity(DeviceDataDTO deviceDataDTO) {
         DeviceDataEntity entity = mapper.convertValue(deviceDataDTO, DeviceDataEntity.class);
         entity.device = Optional.ofNullable(deviceRepository.getByID(deviceDataDTO.id)).orElse(null);
+        entity.values = deviceDataDTO.values.entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, f -> String.valueOf(f.getValue())));
         return entity;
     }
 
     public DeviceDataDTO entityToModel(DeviceDataEntity deviceDataEntity) {
         DeviceDataDTO dto = mapper.convertValue(deviceDataEntity, DeviceDataDTO.class);
-        dto.id = Optional.ofNullable(deviceDataRepository.getByIDWithParent(deviceDataEntity.device.id))
+        dto.deviceID = Optional.ofNullable(deviceDataRepository.getByIDWithParent(deviceDataEntity.device.id))
                 .map(f -> f.id)
                 .orElse(-1L);
+        dto.values = deviceDataEntity.values.entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, DeviceDataProperty::convertToTypeByKey));
         return dto;
     }
 }

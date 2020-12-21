@@ -1,7 +1,5 @@
 package org.smartlights.device.resources;
 
-import org.eclipse.microprofile.metrics.MetricUnits;
-import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.smartlights.device.dto.DeviceDTO;
 import org.smartlights.device.utils.Constants;
 
@@ -23,7 +21,6 @@ import java.util.stream.Stream;
 @Transactional
 public interface DevicesResource {
 
-    @GET
     @Path("/{id}")
     DeviceResource forwardToDevice(@PathParam("id") Long id);
 
