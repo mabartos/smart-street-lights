@@ -1,9 +1,8 @@
-package org.smartlights.device.dto;
+package org.smartlights.simulation.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.vertx.core.impl.ConcurrentHashSet;
-import org.smartlights.device.utils.DeviceType;
 
 import java.io.Serializable;
 import java.util.Set;

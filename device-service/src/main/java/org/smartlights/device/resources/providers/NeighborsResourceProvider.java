@@ -19,7 +19,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.smartlights.device.utils.DeviceErrorMessages.getNotFoundMessage;
 import static org.smartlights.device.utils.DeviceErrorMessages.notFoundException;
@@ -40,17 +41,18 @@ public class NeighborsResourceProvider implements NeighborsResource {
 
     @GET
     @Path("/id")
-    public Stream<Long> getAllID(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                                 @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
-        return Optional.ofNullable(neighborsRepository.getAllID(deviceID, firstResult, maxResults))
-                .orElseGet(Stream::empty);
+    public Set<Long> getAllID(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                              @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
+        return neighborsRepository.getAllID(deviceID, firstResult, maxResults)
+                .collect(Collectors.toSet());
     }
 
     @GET
-    public Stream<DeviceDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                                    @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
-        return Optional.ofNullable(neighborsRepository.getAll(deviceID, firstResult, maxResults).map(serializer::entityToModel))
-                .orElseGet(Stream::empty);
+    public Set<DeviceDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                                 @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
+        return neighborsRepository.getAll(deviceID, firstResult, maxResults)
+                .map(serializer::entityToModel)
+                .collect(Collectors.toSet());
     }
 
     @GET

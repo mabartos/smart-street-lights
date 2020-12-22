@@ -14,7 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.stream.Stream;
+import java.util.Set;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -23,12 +23,12 @@ public interface NeighborsResource {
 
     @GET
     @Path("/id")
-    Stream<Long> getAllID(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                          @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
+    Set<Long> getAllID(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                       @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
 
     @GET
-    Stream<DeviceDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                             @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
+    Set<DeviceDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                          @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
 
     @GET
     @Path("/count")

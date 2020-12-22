@@ -27,7 +27,7 @@ import javax.ws.rs.core.MediaType;
 import static org.smartlights.device.utils.DeviceErrorMessages.notFoundException;
 
 @ApplicationScoped
-@Path("/async/devices")
+@Path("/devices/async")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Transactional

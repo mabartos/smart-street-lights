@@ -21,6 +21,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Produces(MediaType.APPLICATION_JSON)
@@ -48,24 +50,24 @@ public class DataResourceProvider implements DataResource {
     }
 
     @GET
-    public Stream<DeviceDataDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                                        @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
+    public Set<DeviceDataDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                                     @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
         return addParentID(dataRepository.getAllFromParent(parentID, firstResult, maxResults));
     }
 
     @GET
     @Path("recent/{timestamp}")
-    public Stream<DeviceDataDTO> getAllRecentThan(@PathParam("timestamp") Timestamp timestamp,
-                                                  @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                                                  @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
+    public Set<DeviceDataDTO> getAllRecentThan(@PathParam("timestamp") Timestamp timestamp,
+                                               @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                                               @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
         return addParentID(dataRepository.getAllRecentThan(parentID, timestamp, firstResult, maxResults));
     }
 
     @GET
     @Path("recent/{timestamp}")
-    public Stream<DeviceDataDTO> getAllOlderThan(@PathParam("timestamp") Timestamp timestamp,
-                                                 @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                                                 @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
+    public Set<DeviceDataDTO> getAllOlderThan(@PathParam("timestamp") Timestamp timestamp,
+                                              @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                                              @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
         return addParentID(dataRepository.getAllOlderThan(parentID, timestamp, firstResult, maxResults));
     }
 
@@ -75,7 +77,8 @@ public class DataResourceProvider implements DataResource {
         return dataRepository.removeOlderThan(parentID, timestamp);
     }
 
-    private Stream<DeviceDataDTO> addParentID(Stream<DeviceDataEntity> stream) {
-        return stream.map(f -> serializer.entityToModel(f, parentID));
+    private Set<DeviceDataDTO> addParentID(Stream<DeviceDataEntity> stream) {
+        return stream.map(f -> serializer.entityToModel(f, parentID))
+                .collect(Collectors.toSet());
     }
 }

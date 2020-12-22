@@ -15,7 +15,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
-import java.util.stream.Stream;
+import java.util.Set;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -26,20 +26,20 @@ public interface DataResource {
     Response handleData(DeviceDataDTO data);
 
     @GET
-    Stream<DeviceDataDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                                 @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
+    Set<DeviceDataDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                              @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
 
     @GET
     @Path("recent/{timestamp}")
-    Stream<DeviceDataDTO> getAllRecentThan(@PathParam("timestamp") Timestamp timestamp,
-                                           @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                                           @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
+    Set<DeviceDataDTO> getAllRecentThan(@PathParam("timestamp") Timestamp timestamp,
+                                        @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                                        @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
 
     @GET
     @Path("recent/{timestamp}")
-    Stream<DeviceDataDTO> getAllOlderThan(@PathParam("timestamp") Timestamp timestamp,
-                                          @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                                          @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
+    Set<DeviceDataDTO> getAllOlderThan(@PathParam("timestamp") Timestamp timestamp,
+                                       @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                                       @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
 
     @DELETE
     @Path("{timestamp}")

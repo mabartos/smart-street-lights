@@ -21,7 +21,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.smartlights.device.utils.DeviceErrorMessages.notFoundException;
 
@@ -50,31 +51,34 @@ public class DevicesResourceProvider implements DevicesResource {
 
     @GET
     @Timed(name = "getAllDevices", description = "Get all devices", unit = MetricUnits.MILLISECONDS)
-    public Stream<DeviceDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                                    @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
+    public Set<DeviceDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                                 @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
         return session.getDeviceRepository()
                 .getAll(firstResult, maxResults)
-                .map(serializer::entityToModel);
+                .map(serializer::entityToModel)
+                .collect(Collectors.toSet());
     }
 
     @GET
     @Path("/fromStreet/{streetID}")
-    public Stream<DeviceDTO> getAllFromStreet(@PathParam("streetID") String streetID,
-                                              @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                                              @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
+    public Set<DeviceDTO> getAllFromStreet(@PathParam("streetID") String streetID,
+                                           @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                                           @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
         return session.getDeviceRepository()
                 .getAllFromStreet(streetID, firstResult, maxResults)
-                .map(serializer::entityToModel);
+                .map(serializer::entityToModel)
+                .collect(Collectors.toSet());
     }
 
     @GET
     @Path("/fromCity/{cityID}")
-    public Stream<DeviceDTO> getAllFromCity(@PathParam("cityID") String cityID,
-                                            @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                                            @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
+    public Set<DeviceDTO> getAllFromCity(@PathParam("cityID") String cityID,
+                                         @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                                         @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
         return session.getDeviceRepository()
                 .getAllFromCity(cityID, firstResult, maxResults)
-                .map(serializer::entityToModel);
+                .map(serializer::entityToModel)
+                .collect(Collectors.toSet());
     }
 
     @POST

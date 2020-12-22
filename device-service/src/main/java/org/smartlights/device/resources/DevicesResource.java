@@ -13,7 +13,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.util.stream.Stream;
+import java.util.Set;
 
 @Path("/devices")
 @Produces(MediaType.APPLICATION_JSON)
@@ -29,19 +29,20 @@ public interface DevicesResource {
     DeviceDTO getBySerialNo(@PathParam("serialNo") String serialNo);
 
     @GET
-    Stream<DeviceDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                                @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
+    Set<DeviceDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                          @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
 
     @GET
     @Path("/fromStreet/{streetID}")
-    Stream<DeviceDTO> getAllFromStreet(@PathParam("streetID") String streetID,
-                                          @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                                          @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
+    Set<DeviceDTO> getAllFromStreet(@PathParam("streetID") String streetID,
+                                    @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                                    @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
+
     @GET
     @Path("/fromCity/{cityID}")
-    Stream<DeviceDTO> getAllFromCity(@PathParam("cityID") String cityID,
-                                        @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                                        @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
+    Set<DeviceDTO> getAllFromCity(@PathParam("cityID") String cityID,
+                                  @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                                  @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
 
     @POST
     DeviceDTO create(DeviceDTO device);
