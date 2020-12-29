@@ -22,6 +22,10 @@ public interface DeviceResource {
     @DELETE
     Response delete();
 
+    @GET
+    @Path("/data/count")
+    int getCountOfData();
+
     @Path("/data")
     DataResource forwardToDataResource();
 }

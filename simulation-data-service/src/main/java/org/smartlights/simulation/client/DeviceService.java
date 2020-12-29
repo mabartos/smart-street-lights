@@ -23,10 +23,8 @@ import java.util.Set;
 public interface DeviceService {
 
     @GET
-    Multi<DeviceDTO> getAll();
-
-    @GET
-    Set<DeviceDTO> getAllDevices(@QueryParam("firstResult") Integer firstResult, @QueryParam("maxResults") Integer maxResults);
+    Set<DeviceDTO> getAllDevices(@QueryParam("firstResult") Integer firstResult,
+                                 @QueryParam("maxResults") Integer maxResults);
 
     @POST
     DeviceDTO create(DeviceDTO device);

@@ -12,6 +12,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -125,5 +126,10 @@ public class DeviceRepository implements PanacheRepository<DeviceEntity>, Device
     @Override
     public DeviceEntity update(DeviceEntity deviceEntity) {
         return Panache.getEntityManager().merge(deviceEntity);
+    }
+
+    @Override
+    public int getCountOfData(Long id) {
+        return Optional.ofNullable(getByIDWithData(id)).map(f -> f.data.size()).orElse(0);
     }
 }

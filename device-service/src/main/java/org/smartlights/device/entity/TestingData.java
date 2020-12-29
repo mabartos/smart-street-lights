@@ -1,6 +1,7 @@
 package org.smartlights.device.entity;
 
 import io.quarkus.runtime.StartupEvent;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.smartlights.device.entity.repository.DeviceDataRepository;
 import org.smartlights.device.entity.repository.DeviceRepository;
 import org.smartlights.device.utils.DeviceDataProperty;
@@ -9,8 +10,6 @@ import org.smartlights.device.utils.DeviceType;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -24,9 +23,14 @@ public class TestingData {
     @Inject
     DeviceDataRepository deviceDataRepository;
 
+    @ConfigProperty(name = "device.testing-data", defaultValue = "false")
+    Boolean generateTestingData;
+
     private static final Logger logger = Logger.getLogger(TestingData.class.getName());
 
     public void addTestingData(@Observes StartupEvent start) {
+        if (!generateTestingData) return;
+
         final int ENTITY_COUNT = 10;
         final int DATA_ENTITY_COUNT = 5;
         logger.info("Adding testing data...");

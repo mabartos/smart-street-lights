@@ -35,4 +35,5 @@ public interface DeviceRepositoryModel {
 
     DeviceEntity update(DeviceEntity deviceEntity);
 
+    int getCountOfData(Long id);
 }

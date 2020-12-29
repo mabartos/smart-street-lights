@@ -35,14 +35,22 @@ public class DeviceDataRepository implements PanacheRepository<DeviceDataEntity>
     @Override
     public boolean saveData(Long parentID, DeviceDataDTO data) {
         DeviceEntity device = deviceRepository.getByIDWithData(Optional.ofNullable(parentID).orElseGet(() -> data.deviceID));
-        if (device != null) {
-            DeviceDataEntity dataEntity = serializer.modelToEntity(data);
-            dataEntity.persist();
-            dataEntity.device = device;
-            device.data.add(dataEntity);
-            return true;
-        }
-        return false;
+        if (device == null) return false;
+
+        DeviceDataEntity dataEntity = serializer.modelToEntity(data);
+        dataEntity.device = device;
+        dataEntity.persist();
+        device.data.add(dataEntity);
+        checkAndRemoveDataSize(device.data, device);
+        return true;
+    }
+
+    //TODO fix this
+    private boolean checkAndRemoveDataSize(Set<DeviceDataEntity> data, DeviceEntity device) {
+        return !data.isEmpty()
+                && data.size() >= DATA_SIZE
+                && data.remove(data.stream().findFirst().get())
+                && getEntityManager().merge(device) != null;
     }
 
     @Override

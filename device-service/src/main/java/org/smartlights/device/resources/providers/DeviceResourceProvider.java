@@ -49,6 +49,12 @@ public class DeviceResourceProvider implements DeviceResource {
         throw new NotFoundException(getNotFoundMessage(id));
     }
 
+    @GET
+    @Path("/data/count")
+    public int getCountOfData() {
+        return session.getDeviceRepository().getCountOfData(id);
+    }
+
     @Path("/data")
     public DataResource forwardToDataResource() {
         return new DataResourceProvider(session.setActualDeviceID(id));

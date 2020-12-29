@@ -8,6 +8,8 @@ import java.util.stream.Stream;
 
 public interface DeviceDataRepositoryModel {
 
+    Integer DATA_SIZE = 10;
+
     boolean saveData(Long parentID, DeviceDataDTO data);
 
     boolean saveData(DeviceDataDTO data);
