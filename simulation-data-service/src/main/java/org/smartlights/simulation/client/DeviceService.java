@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 import java.util.Set;
 
 @RegisterRestClient(configKey = "device-service")
-@Path("/api/devices/async")
+@Path("/api/devices")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public interface DeviceService {
