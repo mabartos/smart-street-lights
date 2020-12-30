@@ -1,7 +1,7 @@
-package org.smartlights.device.dto;
+package org.smartlights.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.smartlights.device.utils.DeviceType;
+import org.smartlights.data.utils.DeviceType;
 
 import java.io.Serializable;
 import java.util.Date;

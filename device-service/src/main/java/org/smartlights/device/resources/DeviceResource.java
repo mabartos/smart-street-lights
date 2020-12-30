@@ -25,7 +25,4 @@ public interface DeviceResource {
     @GET
     @Path("/data/count")
     int getCountOfData();
-
-    @Path("/data")
-    DataResource forwardToDataResource();
 }

@@ -6,6 +6,7 @@ import io.vertx.core.impl.ConcurrentHashSet;
 import org.smartlights.device.utils.DeviceType;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -52,8 +53,8 @@ public class DeviceEntity extends PanacheEntity {
     public Set<DeviceEntity> neighbors = new ConcurrentHashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "device", orphanRemoval = true)
-    public Set<DeviceDataEntity> data = new ConcurrentHashSet<>();
+    @ElementCollection
+    public Set<Long> data = new ConcurrentHashSet<>();
 
     @Override
     public boolean equals(Object object) {

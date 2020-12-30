@@ -1,8 +1,8 @@
-package org.smartlights.device.entity;
+package org.smartlights.data.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import org.hibernate.annotations.CreationTimestamp;
-import org.smartlights.device.utils.DeviceType;
+import org.smartlights.data.utils.DeviceType;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -10,7 +10,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -25,7 +24,7 @@ import java.util.Objects;
 @Table(name = "DEVICE_DATA")
 @NamedQueries({
         @NamedQuery(name = "removeDeviceDataByIDs", query = "delete from DeviceDataEntity device where device.id in :ids"),
-        @NamedQuery(name = "getDeviceDataWithParent", query = "select device from DeviceDataEntity device left join fetch device.device where device.id =:id"),
+        @NamedQuery(name = "getAllByDeviceID", query = "select data from DeviceDataEntity data where data.deviceID=:deviceID")
 })
 public class DeviceDataEntity extends PanacheEntity {
 
@@ -40,9 +39,8 @@ public class DeviceDataEntity extends PanacheEntity {
     @Column
     public DeviceType type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    public DeviceEntity device;
+    @Column
+    public Long deviceID;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "device_data_values",
@@ -62,11 +60,11 @@ public class DeviceDataEntity extends PanacheEntity {
                 && timestamp.equals(deviceData.timestamp)
                 && type.equals(deviceData.type)
                 && serialNo.equals(deviceData.serialNo)
-                && device.equals(deviceData.device)
+                && deviceID.equals(deviceData.deviceID)
                 && values.equals(deviceData.values);
     }
 
     public int hashCode() {
-        return Objects.hash(id, timestamp, type, serialNo, device);
+        return Objects.hash(id, timestamp, type, serialNo, deviceID);
     }
 }
