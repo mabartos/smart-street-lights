@@ -29,7 +29,8 @@ I'd suggest deploy these services:
 <li>Auth service - AuthN and AuthZ</li>
 <li>City service</li>
 <li>Street service</li>
-<li>Device service - core functionality</li>
+<li>Device service - device management</li>
+<li>Device Data service - data management</li>
 <li>(optional) Data Simulation service - create simulated data from sensors</li>
 </ul>
 
@@ -42,6 +43,7 @@ Here's a proposal for tools/services used for implementing the components of the
 <li>REST - Mutiny (async)</li>
 <li>Metrics - Prometheus</li>
 <li>API visualize - Swagger UI</li>
+<li>Istio</li>
 </ul>
 
 For bulk operations, there should be used pagination. f.e. `getAll(int firstResult, int maxResults)`, 

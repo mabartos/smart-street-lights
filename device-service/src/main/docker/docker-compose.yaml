@@ -1,19 +1,19 @@
-# Use postgres/example user/password credentials
 version: '3.1'
 
 services:
-
   device-db:
     image: postgres
     ports:
-      - "5432:5432"
-    restart: always
+      - "${DB_PORT}:${DB_PORT}"
+    restart: ${DB_RESTART_TYPE}
     environment:
-      POSTGRES_DB: device-db
-      POSTGRES_USER: device-service
-      POSTGRES_PASSWORD: password
+      POSTGRES_URL: ${DB_URL}
+      POSTGRES_PORT: ${DB_PORT}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
     volumes:
-      - ./data:/var/lib/postgresql
+      - ./data:/var/lib/${DB_NAME}
 
     # PROD
     #device-service:

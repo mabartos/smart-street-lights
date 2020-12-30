@@ -1,7 +1,6 @@
 package org.smartlights.device.resources.providers;
 
 import org.smartlights.device.dto.DeviceDTO;
-import org.smartlights.device.resources.DataResource;
 import org.smartlights.device.resources.DeviceResource;
 import org.smartlights.device.resources.DeviceSession;
 
@@ -53,10 +52,5 @@ public class DeviceResourceProvider implements DeviceResource {
     @Path("/data/count")
     public int getCountOfData() {
         return session.getDeviceRepository().getCountOfData(id);
-    }
-
-    @Path("/data")
-    public DataResource forwardToDataResource() {
-        return new DataResourceProvider(session.setActualDeviceID(id));
     }
 }

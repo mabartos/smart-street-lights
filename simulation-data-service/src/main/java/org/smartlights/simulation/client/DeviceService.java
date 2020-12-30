@@ -1,6 +1,5 @@
 package org.smartlights.simulation.client;
 
-import io.smallrye.mutiny.Multi;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.smartlights.simulation.model.DeviceDTO;
 import org.smartlights.simulation.model.DeviceDataDTO;

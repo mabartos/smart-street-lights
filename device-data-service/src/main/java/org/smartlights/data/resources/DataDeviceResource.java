@@ -1,7 +1,7 @@
-package org.smartlights.device.resources;
+package org.smartlights.data.resources;
 
-import org.smartlights.device.dto.DeviceDataDTO;
-import org.smartlights.device.utils.Constants;
+import org.smartlights.data.dto.DeviceDataDTO;
+import org.smartlights.data.utils.Constants;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -20,28 +20,28 @@ import java.util.Set;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Transactional
-public interface DataResource {
+public interface DataDeviceResource {
 
     @POST
-    Response handleData(DeviceDataDTO data);
+    Response handleData(Long deviceID, DeviceDataDTO data);
 
     @GET
-    Set<DeviceDataDTO> getAll(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
-                              @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
+    Set<DeviceDataDTO> getAllFromDevice(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
+                                        @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
 
     @GET
     @Path("recent/{timestamp}")
-    Set<DeviceDataDTO> getAllRecentThan(@PathParam("timestamp") Timestamp timestamp,
+    Set<DeviceDataDTO> getAllRecentThan(@PathParam(Constants.TIMESTAMP) Timestamp timestamp,
                                         @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
                                         @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
 
     @GET
     @Path("recent/{timestamp}")
-    Set<DeviceDataDTO> getAllOlderThan(@PathParam("timestamp") Timestamp timestamp,
+    Set<DeviceDataDTO> getAllOlderThan(@PathParam(Constants.TIMESTAMP) Timestamp timestamp,
                                        @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
                                        @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
 
     @DELETE
     @Path("{timestamp}")
-    boolean removeOlderThan(@PathParam("timestamp") Timestamp timestamp);
+    Response removeOlderThan(@PathParam(Constants.TIMESTAMP) Timestamp timestamp);
 }

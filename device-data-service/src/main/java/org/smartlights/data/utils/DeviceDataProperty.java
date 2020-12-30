@@ -1,4 +1,4 @@
-package org.smartlights.device.utils;
+package org.smartlights.data.utils;
 
 import java.util.Arrays;
 import java.util.Map;

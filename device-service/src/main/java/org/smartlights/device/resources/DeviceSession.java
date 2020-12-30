@@ -1,7 +1,6 @@
 package org.smartlights.device.resources;
 
 import org.smartlights.device.dto.DeviceSerializer;
-import org.smartlights.device.entity.repository.DeviceDataRepository;
 import org.smartlights.device.entity.repository.DeviceRepository;
 import org.smartlights.device.entity.repository.NeighborsRepository;
 import org.smartlights.device.services.DeviceService;
@@ -17,9 +16,6 @@ public class DeviceSession {
 
     @Inject
     DeviceRepository deviceRepository;
-
-    @Inject
-    DeviceDataRepository deviceDataRepository;
 
     @Inject
     NeighborsRepository neighborsRepository;
@@ -39,10 +35,6 @@ public class DeviceSession {
 
     public NeighborsRepository getNeighborsRepository() {
         return neighborsRepository;
-    }
-
-    public DeviceDataRepository getDeviceDataRepository() {
-        return deviceDataRepository;
     }
 
     public DeviceSerializer getDeviceSerializer() {
