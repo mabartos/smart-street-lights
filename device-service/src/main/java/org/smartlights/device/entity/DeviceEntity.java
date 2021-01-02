@@ -6,7 +6,6 @@ import io.vertx.core.impl.ConcurrentHashSet;
 import org.smartlights.device.utils.DeviceType;
 
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -23,8 +22,7 @@ import java.util.Set;
 @Table(name = "DEVICES")
 @NamedQueries({
         @NamedQuery(name = "getDeviceByID", query = "select device from DeviceEntity device left join fetch device.parent where device.id=:id"),
-        @NamedQuery(name = "getWholeDevice", query = "select device from DeviceEntity device left join fetch device.neighbors left join fetch device.parent left join fetch device.data where device.id=:id"),
-        @NamedQuery(name = "getDeviceWithData", query = "select device from DeviceEntity device left join fetch device.data where device.id=:id"),
+        @NamedQuery(name = "getWholeDevice", query = "select device from DeviceEntity device left join fetch device.neighbors left join fetch device.parent where device.id=:id"),
         @NamedQuery(name = "getDevicesFromStreet", query = "select device from DeviceEntity device where device.streetID=:streetID"),
         @NamedQuery(name = "getDevicesFromCity", query = "select device from DeviceEntity device where device.cityID=:cityID")
 })
@@ -51,10 +49,6 @@ public class DeviceEntity extends PanacheEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "parent")
     public Set<DeviceEntity> neighbors = new ConcurrentHashSet<>();
-
-    @JsonIgnore
-    @ElementCollection
-    public Set<Long> data = new ConcurrentHashSet<>();
 
     @Override
     public boolean equals(Object object) {

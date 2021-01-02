@@ -38,13 +38,13 @@ public class DevicesResourceProvider implements DevicesResource {
     @Inject
     DeviceSerializer serializer;
 
-    @Path("/{id}")
+    @Path("{id}")
     public DeviceResource forwardToDevice(@PathParam("id") Long id) {
         return new DeviceResourceProvider(session.setActualDeviceID(id));
     }
 
     @GET
-    @Path("/serial/{serialNo}")
+    @Path("serial/{serialNo}")
     public DeviceDTO getBySerialNo(@PathParam("serialNo") String serialNo) {
         return serializer.entityToModel(session.getDeviceRepository().getBySerialNo(serialNo));
     }
@@ -60,7 +60,7 @@ public class DevicesResourceProvider implements DevicesResource {
     }
 
     @GET
-    @Path("/fromStreet/{streetID}")
+    @Path("fromStreet/{streetID}")
     public Set<DeviceDTO> getAllFromStreet(@PathParam("streetID") String streetID,
                                            @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
                                            @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
@@ -71,7 +71,7 @@ public class DevicesResourceProvider implements DevicesResource {
     }
 
     @GET
-    @Path("/fromCity/{cityID}")
+    @Path("fromCity/{cityID}")
     public Set<DeviceDTO> getAllFromCity(@PathParam("cityID") String cityID,
                                          @QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
                                          @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {

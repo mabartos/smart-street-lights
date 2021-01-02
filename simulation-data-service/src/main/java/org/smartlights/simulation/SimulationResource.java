@@ -3,6 +3,7 @@ package org.smartlights.simulation;
 import io.vertx.core.Vertx;
 import io.vertx.core.shareddata.LocalMap;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.smartlights.simulation.client.DeviceDataService;
 import org.smartlights.simulation.client.DeviceService;
 import org.smartlights.simulation.model.DeviceDTO;
 import org.smartlights.simulation.model.DeviceDataDTO;
@@ -35,6 +36,10 @@ public class SimulationResource {
     @Inject
     @RestClient
     DeviceService deviceService;
+
+    @Inject
+    @RestClient
+    DeviceDataService deviceDataService;
 
     @Inject
     Vertx vertx;
@@ -107,7 +112,7 @@ public class SimulationResource {
                         try {
                             dataCount.set(dataCount.get() + 1);
                             log.info("Generated data set: " + dataCount);
-                            finalDevices.forEach(f -> deviceService.sendData(f.id, createTestingData(f.type)));
+                            finalDevices.forEach(f -> deviceDataService.handleData(f.id, createTestingData(f.type)));
                             if (dataCount.get() >= count) throw new RuntimeException("Achieved the total count.");
                         } catch (Exception e) {
                             log.warning("Stopped generating of data. " + e.getMessage());

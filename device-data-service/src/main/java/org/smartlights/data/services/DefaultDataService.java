@@ -2,7 +2,7 @@ package org.smartlights.data.services;
 
 
 import org.smartlights.data.dto.DeviceDataDTO;
-import org.smartlights.data.entity.repository.DeviceDataRepository;
+import org.smartlights.data.resources.DataSession;
 import org.smartlights.data.utils.DeviceDataProperty;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -16,7 +16,7 @@ public class DefaultDataService implements DataService {
     private static final Logger logger = Logger.getLogger(DefaultDataService.class.getName());
 
     @Inject
-    DeviceDataRepository dataRepository;
+    DataSession session;
 
     @Override
     public boolean handleData(DeviceDataDTO data) {
@@ -26,12 +26,13 @@ public class DefaultDataService implements DataService {
     @Override
     public boolean handleData(Long deviceID, DeviceDataDTO data) {
         logger.info("---------DATA----------");
-        logger.info("Device: " + Optional.ofNullable(deviceID).orElseGet(() -> data.deviceID));
+        final Long finalDeviceID = Optional.ofNullable(deviceID).orElseGet(() -> data.deviceID);
+        logger.info("Device: " + finalDeviceID);
         data.values.entrySet()
                 .stream()
                 .filter(entry -> DeviceDataProperty.containsProperty(entry.getKey()))
                 .forEach(f -> logger.info("Key: " + f.getKey() + ", Value: " + f.getValue()));
         logger.info("-----------------------");
-        return dataRepository.saveData(data);
+        return session.getDataRepository().saveData(deviceID, data);
     }
 }

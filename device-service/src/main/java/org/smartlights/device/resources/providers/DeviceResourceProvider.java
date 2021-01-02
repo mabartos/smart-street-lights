@@ -50,7 +50,7 @@ public class DeviceResourceProvider implements DeviceResource {
 
     @GET
     @Path("/data/count")
-    public int getCountOfData() {
-        return session.getDeviceRepository().getCountOfData(id);
+    public Long getCountOfData() {
+        return session.getDeviceDataService().countOfDeviceData(id);
     }
 }

@@ -1,5 +1,7 @@
 package org.smartlights.device.resources;
 
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.smartlights.device.client.DeviceDataService;
 import org.smartlights.device.dto.DeviceSerializer;
 import org.smartlights.device.entity.repository.DeviceRepository;
 import org.smartlights.device.entity.repository.NeighborsRepository;
@@ -22,6 +24,10 @@ public class DeviceSession {
 
     @Inject
     DeviceSerializer deviceSerializer;
+
+    @Inject
+    @RestClient
+    DeviceDataService deviceDataService;
 
     private Long actualDeviceID;
 
@@ -48,5 +54,9 @@ public class DeviceSession {
     public DeviceSession setActualDeviceID(Long deviceID) {
         this.actualDeviceID = deviceID;
         return this;
+    }
+
+    public DeviceDataService getDeviceDataService() {
+        return deviceDataService;
     }
 }

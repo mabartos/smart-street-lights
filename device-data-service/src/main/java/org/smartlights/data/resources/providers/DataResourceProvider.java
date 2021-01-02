@@ -2,6 +2,7 @@ package org.smartlights.data.resources.providers;
 
 import org.smartlights.data.dto.DataSerializer;
 import org.smartlights.data.dto.DeviceDataDTO;
+import org.smartlights.data.entity.DeviceDataEntity;
 import org.smartlights.data.resources.DataDeviceResource;
 import org.smartlights.data.resources.DataResource;
 import org.smartlights.data.resources.DataSession;
@@ -12,12 +13,15 @@ import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Optional;
+import java.util.Set;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -30,9 +34,11 @@ public class DataResourceProvider implements DataResource {
     DataSession session;
 
     @GET
-    @Path("/{id}")
+    @Path("{id}")
     public DeviceDataDTO getByID(@PathParam("id") Long id) {
-        return DataSerializer.entityToModel(session.getDataRepository().getByID(id));
+        DeviceDataEntity entity = session.getDataRepository().getByID(id);
+        return DataSerializer.entityToModel(Optional.ofNullable(entity)
+                .orElseThrow(() -> new NotFoundException("Not found data with specified ID")));
     }
 
     @POST
@@ -41,12 +47,17 @@ public class DataResourceProvider implements DataResource {
     }
 
     @DELETE
-    @Path("/{id}")
+    @Path("{id}")
     public Response removeByID(@PathParam("id") Long id) {
         return session.getDataRepository().removeByID(id) ? Response.ok().build() : Response.status(Response.Status.BAD_REQUEST).build();
     }
 
-    @Path("/device/{id}")
+    @DELETE
+    public Response removeAllByID(Set<Long> ids) {
+        return session.getDataRepository().removeByIDs(ids) ? Response.ok().build() : Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
+    @Path("device/{id}")
     public DataDeviceResource forwardToDeviceData(@PathParam("id") Long deviceID) {
         return new DataDeviceProvider(session.setActualDevice(deviceID));
     }

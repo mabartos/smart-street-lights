@@ -16,6 +16,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -24,7 +25,8 @@ import java.util.Objects;
 @Table(name = "DEVICE_DATA")
 @NamedQueries({
         @NamedQuery(name = "removeDeviceDataByIDs", query = "delete from DeviceDataEntity device where device.id in :ids"),
-        @NamedQuery(name = "getAllByDeviceID", query = "select data from DeviceDataEntity data where data.deviceID=:deviceID")
+        @NamedQuery(name = "getAllByDeviceID", query = "select data from DeviceDataEntity data where data.deviceID=:deviceID"),
+        @NamedQuery(name = "getCountOfDeviceData", query = "select count(distinct data) from DeviceDataEntity data where data.deviceID=:deviceID")
 })
 public class DeviceDataEntity extends PanacheEntity {
 
@@ -48,6 +50,9 @@ public class DeviceDataEntity extends PanacheEntity {
     @MapKeyColumn(name = "NAME")
     @Column(name = "VALUE")
     public Map<String, String> values;
+
+    @Version
+    private int version;
 
     public boolean equals(Object object) {
         if (!(object instanceof DeviceDataEntity))

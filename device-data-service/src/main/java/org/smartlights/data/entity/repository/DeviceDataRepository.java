@@ -1,12 +1,11 @@
 package org.smartlights.data.entity.repository;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.smartlights.data.client.DeviceService;
 import org.smartlights.data.dto.DataSerializer;
 import org.smartlights.data.dto.DeviceDataDTO;
 import org.smartlights.data.entity.DeviceDataEntity;
 import org.smartlights.data.entity.repository.model.DeviceDataRepositoryModel;
+import org.smartlights.data.resources.DataSession;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -27,12 +26,11 @@ import static org.smartlights.data.utils.EntityUtils.pagination;
 public class DeviceDataRepository implements PanacheRepository<DeviceDataEntity>, DeviceDataRepositoryModel {
 
     @Inject
-    @RestClient
-    DeviceService deviceService;
+    DataSession session;
 
     @Override
     public boolean saveData(Long deviceID, DeviceDataDTO data) {
-        Long foundDeviceID = Optional.ofNullable(deviceService.getByID(deviceID)).map(f -> f.id).orElseGet(() -> data.deviceID);
+        Long foundDeviceID = Optional.ofNullable(session.getDeviceService().getByID(deviceID)).map(f -> f.id).orElseGet(() -> data.deviceID);
         if (foundDeviceID == null) return false;
 
         DeviceDataEntity dataEntity = DataSerializer.modelToEntity(data);
@@ -101,11 +99,22 @@ public class DeviceDataRepository implements PanacheRepository<DeviceDataEntity>
     }
 
     @Override
-    public boolean removeOlderThan(Long deviceID, Timestamp timestamp) {
-        Set<Long> ids = getAllOlderThan(deviceID, timestamp).map(f -> f.id).collect(Collectors.toSet());
+    public boolean removeByIDs(Set<Long> ids) {
         Query query = getEntityManager().createNamedQuery("removeDeviceDataByIDs");
         query.setParameter("ids", ids);
         return query.executeUpdate() != 0;
     }
 
+    @Override
+    public boolean removeOlderThan(Long deviceID, Timestamp timestamp) {
+        Set<Long> ids = getAllOlderThan(deviceID, timestamp).map(f -> f.id).collect(Collectors.toSet());
+        return removeByIDs(ids);
+    }
+
+    @Override
+    public Long getCountOfDeviceData(Long deviceID) {
+        TypedQuery<Long> query = getEntityManager().createNamedQuery("getCountOfDeviceData", Long.class);
+        query.setParameter("deviceID", deviceID);
+        return query.getSingleResult();
+    }
 }

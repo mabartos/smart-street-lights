@@ -23,16 +23,16 @@ import javax.ws.rs.core.Response;
 public interface DataResource {
 
     @GET
-    @Path("/{id}")
+    @Path("{id}")
     DeviceDataDTO getByID(@PathParam("id") Long id);
 
     @POST
     Response handleData(DeviceDataDTO data);
 
     @DELETE
-    @Path("/{id}")
+    @Path("{id}")
     Response removeByID(@PathParam("id") Long id);
 
-    @Path("/device/{id}")
+    @Path("device/{id}")
     DataDeviceResource forwardToDeviceData(@PathParam("id") Long deviceID);
 }

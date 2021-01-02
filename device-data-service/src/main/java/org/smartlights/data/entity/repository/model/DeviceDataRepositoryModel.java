@@ -5,6 +5,7 @@ import org.smartlights.data.dto.DeviceDataDTO;
 import org.smartlights.data.entity.DeviceDataEntity;
 
 import java.sql.Timestamp;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public interface DeviceDataRepositoryModel {
@@ -30,8 +31,12 @@ public interface DeviceDataRepositoryModel {
     Stream<DeviceDataEntity> getAllOlderThan(Long deviceID, Timestamp timestamp, Integer firstResult, Integer maxResults);
 
     DeviceDataEntity getByID(Long id);
-    
+
     boolean removeByID(Long id);
 
+    boolean removeByIDs(Set<Long> ids);
+
     boolean removeOlderThan(Long deviceID, Timestamp timestamp);
+
+    Long getCountOfDeviceData(Long deviceID);
 }

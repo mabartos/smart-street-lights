@@ -1,5 +1,7 @@
 package org.smartlights.data.resources;
 
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.smartlights.data.client.DeviceService;
 import org.smartlights.data.entity.repository.DeviceDataRepository;
 import org.smartlights.data.services.DataService;
 
@@ -14,6 +16,10 @@ public class DataSession {
 
     @Inject
     DataService dataService;
+
+    @Inject
+    @RestClient
+    DeviceService deviceService;
 
     private Long actualDeviceID;
 
@@ -32,5 +38,9 @@ public class DataSession {
     
     public DataService getDataService() {
         return dataService;
+    }
+
+    public DeviceService getDeviceService() {
+        return deviceService;
     }
 }

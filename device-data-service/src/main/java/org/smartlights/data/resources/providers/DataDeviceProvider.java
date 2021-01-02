@@ -35,8 +35,14 @@ public class DataDeviceProvider implements DataDeviceResource {
     }
 
     @POST
-    public Response handleData(Long deviceID, DeviceDataDTO data) {
+    public Response handleData(DeviceDataDTO data) {
         return session.getDataService().handleData(deviceID, data) ? Response.ok().build() : Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
+    @GET
+    @Path("count")
+    public Long countOfDeviceData() {
+        return session.getDataRepository().getCountOfDeviceData(deviceID);
     }
 
     @GET

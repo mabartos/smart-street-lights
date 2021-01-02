@@ -34,6 +34,4 @@ public interface DeviceRepositoryModel {
     boolean deleteByID(Long id);
 
     DeviceEntity update(DeviceEntity deviceEntity);
-
-    int getCountOfData(Long id);
 }

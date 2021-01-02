@@ -5,8 +5,8 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 @RegisterRestClient(configKey = "device-service")
@@ -16,6 +16,6 @@ import javax.ws.rs.core.MediaType;
 public interface DeviceService {
 
     @GET
-    @Path("/{id}")
-    DeviceDTO getByID(@QueryParam("id") Long id);
+    @Path("{id}")
+    DeviceDTO getByID(@PathParam("id") Long id);
 }

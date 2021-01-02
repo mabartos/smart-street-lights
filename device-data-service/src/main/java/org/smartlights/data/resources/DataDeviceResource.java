@@ -23,7 +23,10 @@ import java.util.Set;
 public interface DataDeviceResource {
 
     @POST
-    Response handleData(Long deviceID, DeviceDataDTO data);
+    Response handleData(DeviceDataDTO data);
+
+    @GET
+    Long countOfDeviceData();
 
     @GET
     Set<DeviceDataDTO> getAllFromDevice(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,

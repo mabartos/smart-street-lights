@@ -24,5 +24,5 @@ public interface DeviceResource {
 
     @GET
     @Path("/data/count")
-    int getCountOfData();
+    Long getCountOfData();
 }
