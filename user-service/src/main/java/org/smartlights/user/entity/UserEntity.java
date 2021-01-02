@@ -1,12 +1,12 @@
 package org.smartlights.user.entity;
 
-import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.security.jpa.Password;
 import io.quarkus.security.jpa.PasswordType;
 import io.quarkus.security.jpa.Roles;
 import io.quarkus.security.jpa.UserDefinition;
 import io.quarkus.security.jpa.Username;
+import org.apache.directory.api.ldap.model.password.BCrypt;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +24,12 @@ import java.util.Objects;
         @NamedQuery(name = "getUserByUsername", query = "select user from UserEntity user where user.username=:username")
 })
 public class UserEntity extends PanacheEntity {
+
+    @Column
+    private String firstName;
+
+    @Column
+    private String lastName;
 
     @Username
     @Column(nullable = false, unique = true)
@@ -47,12 +53,6 @@ public class UserEntity extends PanacheEntity {
     public UserEntity() {
     }
 
-    public UserEntity(String username, String password, String role) {
-        this.username = username;
-        setPassword(password);
-        this.role = role;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -70,7 +70,7 @@ public class UserEntity extends PanacheEntity {
     }
 
     public void setPassword(String password) {
-        this.password = BcryptUtil.bcryptHash(password);
+        this.password = BCrypt.hashPw(password, BCrypt.genSalt());
     }
 
     public void setRole(String role) {
@@ -85,6 +85,22 @@ public class UserEntity extends PanacheEntity {
         this.email = email;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public boolean equals(Object object) {
         if (!(object instanceof UserEntity))
             return false;
@@ -95,10 +111,12 @@ public class UserEntity extends PanacheEntity {
         return id.equals(user.id)
                 && email.equals(user.email)
                 && password.equals(user.password)
-                && role.equals(user.role);
+                && role.equals(user.role)
+                && firstName.equals(user.firstName)
+                && lastName.equals(user.lastName);
     }
 
     public int hashCode() {
-        return Objects.hash(id, username, email, password, role);
+        return Objects.hash(id, username, email, password, role, firstName, lastName);
     }
 }
