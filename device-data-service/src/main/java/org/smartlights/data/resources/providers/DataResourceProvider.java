@@ -1,5 +1,7 @@
 package org.smartlights.data.resources.providers;
 
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.smartlights.data.dto.DataSerializer;
 import org.smartlights.data.dto.DeviceDataDTO;
 import org.smartlights.data.entity.DeviceDataEntity;
@@ -42,6 +44,7 @@ public class DataResourceProvider implements DataResource {
     }
 
     @POST
+    @Timed(name = "handleOnlyData", description = "Handle only data SYNC", unit = MetricUnits.MILLISECONDS)
     public Response handleData(DeviceDataDTO data) {
         return session.getDataService().handleData(data) ? Response.ok().build() : Response.status(Response.Status.BAD_REQUEST).build();
     }

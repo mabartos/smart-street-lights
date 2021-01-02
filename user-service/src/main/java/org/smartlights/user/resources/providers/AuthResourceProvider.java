@@ -37,6 +37,9 @@ public class AuthResourceProvider implements AuthResource {
         }
 
         //TODO better approach
-        return Jwt.subject(user.getUsername()).groups(user.getRole()).sign();
+        return Jwt.subject(user.getUsername())
+                .upn(user.getEmail())
+                .groups(user.getRole())
+                .sign();
     }
 }

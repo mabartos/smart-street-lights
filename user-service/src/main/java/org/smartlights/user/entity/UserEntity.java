@@ -13,6 +13,9 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Version;
+import javax.validation.constraints.Email;
+import java.util.Objects;
 
 @Entity
 @Table(name = "USERS")
@@ -30,9 +33,16 @@ public class UserEntity extends PanacheEntity {
     @Column(nullable = false)
     private String password;
 
+    @Email
+    @Column
+    private String email;
+
     @Roles
     @Column(nullable = false)
     private String role;
+
+    @Version
+    private int version;
 
     public UserEntity() {
     }
@@ -65,5 +75,30 @@ public class UserEntity extends PanacheEntity {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean equals(Object object) {
+        if (!(object instanceof UserEntity))
+            return false;
+        if (this == object)
+            return true;
+
+        UserEntity user = (UserEntity) object;
+        return id.equals(user.id)
+                && email.equals(user.email)
+                && password.equals(user.password)
+                && role.equals(user.role);
+    }
+
+    public int hashCode() {
+        return Objects.hash(id, username, email, password, role);
     }
 }

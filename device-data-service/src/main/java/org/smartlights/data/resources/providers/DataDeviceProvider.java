@@ -1,5 +1,9 @@
 package org.smartlights.data.resources.providers;
 
+import io.smallrye.mutiny.Uni;
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.smartlights.data.dto.DataSerializer;
 import org.smartlights.data.dto.DeviceDataDTO;
 import org.smartlights.data.resources.DataDeviceResource;
@@ -35,8 +39,17 @@ public class DataDeviceProvider implements DataDeviceResource {
     }
 
     @POST
+    @Timed(name = "handleData", description = "Handle data SYNC", unit = MetricUnits.MILLISECONDS)
+    @Counted(name = "dataCount")
     public Response handleData(DeviceDataDTO data) {
         return session.getDataService().handleData(deviceID, data) ? Response.ok().build() : Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
+    @POST
+    @Path("async")
+    @Timed(name = "handleDataAsync", description = "Handle data ASYNC", unit = MetricUnits.MILLISECONDS)
+    public Uni<Response> handleDataAsync(DeviceDataDTO data) {
+        return Uni.createFrom().item(handleData(data));
     }
 
     @GET

@@ -2,6 +2,8 @@ package org.smartlights.simulation;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.shareddata.LocalMap;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.smartlights.simulation.client.DeviceDataService;
 import org.smartlights.simulation.client.DeviceService;
@@ -32,6 +34,10 @@ public class SimulationResource {
     private static final Logger log = Logger.getLogger(SimulationResource.class.getName());
     private final String DEFAULT_SHARED_MAP = "DEFAULT_SHARED_MAP";
     private final String SENDING_MAP_ATTRIBUTE = "DATA_SENDING";
+
+    @Inject
+    @Channel("data-simulation")
+    Emitter<DeviceDataDTO> dataEmitter;
 
     @Inject
     @RestClient
@@ -103,7 +109,7 @@ public class SimulationResource {
         localMap.put(SENDING_MAP_ATTRIBUTE, true);
 
         try {
-            Set<DeviceDTO> devices = deviceService.getAllDevices(firstResult, maxResults);
+            final Set<DeviceDTO> devices = deviceService.getAllDevices(firstResult, maxResults);
             final Set<DeviceDTO> finalDevices = devices.isEmpty() ? createTestingDevices(30) : devices;
             AtomicReference<Integer> dataCount = new AtomicReference<>(0);
 
@@ -111,8 +117,8 @@ public class SimulationResource {
                     .handler((t) -> {
                         try {
                             dataCount.set(dataCount.get() + 1);
-                            log.info("Generated data set: " + dataCount);
-                            finalDevices.forEach(f -> deviceDataService.handleData(f.id, createTestingData(f.type)));
+                            log.info("Generated data set: " + dataCount + ". For " + finalDevices.size() + " devices.");
+                            finalDevices.forEach(f -> sendDataChoice(f));
                             if (dataCount.get() >= count) throw new RuntimeException("Achieved the total count.");
                         } catch (Exception e) {
                             log.warning("Stopped generating of data. " + e.getMessage());
@@ -131,11 +137,25 @@ public class SimulationResource {
     }
 
     /**
-     * Helper method for data generation
+     * Approach how to send data.
      *
-     * @param type Type of Device
+     * @param deviceDTO
      */
-    private DeviceDataDTO createTestingData(DeviceType type) {
+    private void sendDataChoice(DeviceDTO deviceDTO) {
+        final DeviceDataDTO data = createTestingData(deviceDTO);
+        if (data.deviceID % 2 == 0) {
+            log.info("Sent by REST");
+            deviceDataService.handleData(deviceDTO.id, data);
+        } else {
+            log.info("Sent by KAFKA");
+            dataEmitter.send(data);
+        }
+    }
+
+    /**
+     * Helper method for data generation
+     */
+    private DeviceDataDTO createTestingData(DeviceDTO device) {
         final Random random = new Random();
         final byte MAX_INTENSITY = 100;
         final int MAX_AMBIENT = 1000;
@@ -145,21 +165,23 @@ public class SimulationResource {
         final String DETECT_FIELD = "detect";
 
         DeviceDataDTO data = new DeviceDataDTO();
+        data.deviceID = device.id;
+        data.serialNo = device.serialNo;
         data.timestamp = new Date();
 
-        switch (type) {
+        switch (device.type) {
             case LIGHT:
-                data.type = type;
+                data.type = device.type;
                 data.values.put(INTENSITY_FIELD, getRandomInt(0, MAX_INTENSITY));
                 data.values.put(AMBIENT_FIELD, getRandomInt(0, MAX_AMBIENT));
                 data.values.put(DETECT_FIELD, random.nextBoolean());
                 break;
             case PIR:
-                data.type = type;
+                data.type = device.type;
                 data.values.put(DETECT_FIELD, random.nextBoolean());
                 break;
             case PHOTO_RESISTOR:
-                data.type = type;
+                data.type = device.type;
                 data.values.put(AMBIENT_FIELD, getRandomInt(0, MAX_AMBIENT));
                 break;
         }

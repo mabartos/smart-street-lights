@@ -30,29 +30,3 @@ services:
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
 
-  device-data-db:
-    image: postgres
-    ports:
-      - "${DB_PORT}:${DB_PORT}"
-    restart: ${DB_RESTART_TYPE}
-    environment:
-      POSTGRES_URL: ${DB_URL}
-      POSTGRES_PORT: ${DB_PORT}
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASS}
-    volumes:
-      - ./data:/var/lib/${DB_NAME}
-    command: -p ${DB_PORT}
-
-    # PROD
-    #device-service:
-    # image: quarkus/device-service-jvm
-    #restart: on-failure
-    #build:
-    #  context: .
-    #  dockerfile: Dockerfile.jvm
-    #ports:
-    #  - "8080:8080"
-    #depends_on:
-    #  - device-data-db
