@@ -1,4 +1,4 @@
-package org.smartlights.street.entities;
+package org.smartlights.city.entities;
 
 import java.util.stream.Stream;
 

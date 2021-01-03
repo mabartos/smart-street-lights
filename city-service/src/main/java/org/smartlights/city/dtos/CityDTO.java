@@ -1,4 +1,4 @@
-package org.smartlights.street.dtos;
+package org.smartlights.city.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

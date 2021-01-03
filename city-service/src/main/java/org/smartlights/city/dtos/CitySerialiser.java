@@ -1,9 +1,9 @@
-package org.smartlights.street.dtos;
+package org.smartlights.city.dtos;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.smartlights.street.entities.CityEntity;
-import org.smartlights.street.entities.CityRepository;
+import org.smartlights.city.entities.CityEntity;
+import org.smartlights.city.entities.CityRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -12,7 +12,7 @@ import javax.inject.Inject;
 public class CitySerialiser {
 
     @Inject
-    CityRepository streetRepository;
+    CityRepository cityRepository;
 
     private static ObjectMapper mapper;
 
@@ -21,11 +21,11 @@ public class CitySerialiser {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public CityEntity modelToEntity(CityDTO streetDTO) {
-        return mapper.convertValue(streetDTO, CityEntity.class);
+    public static CityEntity modelToEntity(CityDTO cityDTO) {
+        return mapper.convertValue(cityDTO, CityEntity.class);
     }
 
-    public CityDTO entityToModel(CityEntity streetEntity) {
-        return mapper.convertValue(streetEntity, CityDTO.class);
+    public static CityDTO entityToModel(CityEntity cityEntity) {
+        return mapper.convertValue(cityEntity, CityDTO.class);
     }
 }

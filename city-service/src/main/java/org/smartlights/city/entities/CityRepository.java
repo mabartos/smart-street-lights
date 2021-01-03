@@ -1,4 +1,4 @@
-package org.smartlights.street.entities;
+package org.smartlights.city.entities;
 
 import io.quarkus.hibernate.orm.panache.Panache;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
