@@ -1,8 +1,12 @@
 package org.smartlights.user.resources;
 
+import io.quarkus.security.Authenticated;
 import org.smartlights.user.data.UserDTO;
+import org.smartlights.user.data.UserRole;
 import org.smartlights.user.utils.Constants;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,16 +23,20 @@ import java.util.Set;
 @Path("users")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@Authenticated
 public interface UsersResource {
 
     @GET
+    @RolesAllowed({UserRole.ADMIN})
     Set<UserDTO> getAllUsers(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
                              @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
 
     @POST
+    @PermitAll
     UserDTO createUser(UserDTO user);
 
     @PATCH
+    @Authenticated
     UserDTO updateUser(UserDTO user);
 
     @Path("{id}")

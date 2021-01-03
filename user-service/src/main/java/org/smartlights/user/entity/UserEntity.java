@@ -6,9 +6,12 @@ import io.quarkus.security.jpa.PasswordType;
 import io.quarkus.security.jpa.Roles;
 import io.quarkus.security.jpa.UserDefinition;
 import io.quarkus.security.jpa.Username;
+import io.vertx.core.impl.ConcurrentHashSet;
 import org.apache.directory.api.ldap.model.password.BCrypt;
+import org.smartlights.user.data.UserRole;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -16,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.Email;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "USERS")
@@ -45,12 +49,14 @@ public class UserEntity extends PanacheEntity {
 
     @Roles
     @Column(nullable = false)
-    private String role;
+    @ElementCollection
+    private Set<String> roles = new ConcurrentHashSet<>();
 
     @Version
     private int version;
 
     public UserEntity() {
+        this.roles.add(UserRole.USER);
     }
 
     public String getUsername() {
@@ -61,8 +67,12 @@ public class UserEntity extends PanacheEntity {
         return password;
     }
 
-    public String getRole() {
-        return role;
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 
     public void setUsername(String username) {
@@ -73,9 +83,6 @@ public class UserEntity extends PanacheEntity {
         this.password = BCrypt.hashPw(password, BCrypt.genSalt());
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
 
     public String getEmail() {
         return email;
@@ -111,12 +118,12 @@ public class UserEntity extends PanacheEntity {
         return id.equals(user.id)
                 && email.equals(user.email)
                 && password.equals(user.password)
-                && role.equals(user.role)
+                && roles.equals(user.roles)
                 && firstName.equals(user.firstName)
                 && lastName.equals(user.lastName);
     }
 
     public int hashCode() {
-        return Objects.hash(id, username, email, password, role, firstName, lastName);
+        return Objects.hash(id, username, email, password, roles, firstName, lastName);
     }
 }

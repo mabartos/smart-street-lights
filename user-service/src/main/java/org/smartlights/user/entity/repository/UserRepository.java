@@ -2,14 +2,16 @@ package org.smartlights.user.entity.repository;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import org.hibernate.exception.ConstraintViolationException;
 import org.smartlights.user.entity.UserEntity;
 import org.smartlights.user.entity.repository.model.UserRepositoryModel;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 @Transactional
@@ -30,12 +32,8 @@ public class UserRepository implements PanacheRepository<UserEntity>, UserReposi
 
     @Override
     public UserEntity create(UserEntity user) {
-        try {
-            persistAndFlush(user);
-            return getByUsername(user.getUsername());
-        } catch (ConstraintViolationException e) {
-            return null;
-        }
+        persistAndFlush(user);
+        return getByUsername(user.getUsername());
     }
 
     @Override

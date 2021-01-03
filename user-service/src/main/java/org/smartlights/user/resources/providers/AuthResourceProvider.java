@@ -31,19 +31,23 @@ public class AuthResourceProvider implements AuthResource {
 
     @POST
     @Path("token")
+    @Produces(MediaType.TEXT_PLAIN)
     public String getAccessToken(AuthUserDTO authUserDTO) {
         UserEntity user = Optional.ofNullable(session.getUserRepository().getByUsername(authUserDTO.username))
-                .orElseThrow(() -> new ClientErrorException("User does not exist!", Response.Status.UNAUTHORIZED));
+                .orElseThrow(this::badCredentialsException);
 
         if (!BCrypt.checkPw(authUserDTO.password, user.getPassword())) {
-            throw new ClientErrorException("Wrong password", Response.Status.UNAUTHORIZED);
+            throw badCredentialsException();
         }
 
-        //TODO add key-location
-        return Jwt.subject(user.getUsername())
-                .upn(user.getEmail())
+        return Jwt.subject(user.getEmail())
+                .upn(user.getUsername())
                 .issuer(user.getFirstName() + " " + user.getLastName())
-                .groups(user.getRole())
+                .groups(user.getRoles())
                 .sign();
+    }
+
+    private ClientErrorException badCredentialsException() {
+        return new ClientErrorException("Invalid username or password", Response.Status.UNAUTHORIZED);
     }
 }
