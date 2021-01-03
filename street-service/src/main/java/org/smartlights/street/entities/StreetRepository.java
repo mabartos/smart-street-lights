@@ -3,7 +3,6 @@ package org.smartlights.street.entities;
 import io.quarkus.hibernate.orm.panache.Panache;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import org.hibernate.annotations.common.reflection.java.generics.IdentityTypeEnvironment;
 import org.hibernate.exception.ConstraintViolationException;
 import org.smartlights.street.utils.StreetCategory;
 
@@ -41,7 +40,7 @@ public class StreetRepository implements PanacheRepository<StreetEntity>, Street
     }
 
     @Override
-    public Stream<StreetEntity> getAllFromCity(Long cityID, Integer firstResult, Integer maxResults) {
+    public Stream<StreetEntity> getAllFromCity(String cityID, Integer firstResult, Integer maxResults) {
         TypedQuery<StreetEntity> query = getEntityManager().createNamedQuery("getStreetsFromCity", StreetEntity.class);
         query.setParameter("cityId", cityID);
         query.setFirstResult(firstResult);

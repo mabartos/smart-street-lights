@@ -14,7 +14,7 @@ public interface StreetRepositoryModel {
 
     Stream<StreetEntity> getAll(Integer firstResult, Integer maxResults);
 
-    Stream<StreetEntity> getAllFromCity(Long cityID, Integer firstResult, Integer maxResults);
+    Stream<StreetEntity> getAllFromCity(String cityID, Integer firstResult, Integer maxResults);
 
     Stream<StreetEntity> getAllInCategory(StreetCategory streetCategory, Integer firstResult, Integer maxResults);
 

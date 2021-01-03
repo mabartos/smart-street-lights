@@ -21,11 +21,11 @@ public class StreetSerialiser {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public StreetEntity modelToEntity(StreetDTO streetDTO) {
+    public static StreetEntity modelToEntity(StreetDTO streetDTO) {
         return mapper.convertValue(streetDTO, StreetEntity.class);
     }
 
-    public StreetDTO entityToModel(StreetEntity streetEntity) {
+    public static StreetDTO entityToModel(StreetEntity streetEntity) {
         return mapper.convertValue(streetEntity, StreetDTO.class);
     }
 }
