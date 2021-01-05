@@ -49,6 +49,13 @@ public class UsersResourceProvider implements UsersResource {
                 .collect(Collectors.toSet());
     }
 
+    @GET
+    @PermitAll
+    @Path("username/{username}")
+    public UserDTO getByUsername(@PathParam("username") String username) {
+        return entityToModel(session.getUserRepository().getByUsername(username));
+    }
+
     @POST
     @PermitAll
     public UserDTO createUser(UserDTO user) {

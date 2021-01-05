@@ -1,5 +1,6 @@
 package org.smartlights.data.resources.providers;
 
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.smartlights.data.dto.DataSerializer;
@@ -9,6 +10,8 @@ import org.smartlights.data.resources.DataDeviceResource;
 import org.smartlights.data.resources.DataResource;
 import org.smartlights.data.resources.DataSession;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -25,6 +28,8 @@ import javax.ws.rs.core.Response;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.smartlights.data.client.UserRole.ADMIN;
+
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/data")
@@ -34,6 +39,16 @@ public class DataResourceProvider implements DataResource {
 
     @Inject
     DataSession session;
+
+    @Inject
+    JsonWebToken token;
+
+    @GET
+    @Path("test")
+    @RolesAllowed(ADMIN)
+    public String test() {
+        return Optional.ofNullable(token.getSubject()).orElse("nothing");
+    }
 
     @GET
     @Path("{id}")

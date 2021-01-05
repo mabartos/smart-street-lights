@@ -5,14 +5,21 @@ import io.vertx.core.shareddata.LocalMap;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.smartlights.simulation.client.AuthTokenUtil;
 import org.smartlights.simulation.client.DeviceDataService;
 import org.smartlights.simulation.client.DeviceService;
+import org.smartlights.simulation.client.UserRole;
+import org.smartlights.simulation.client.UserService;
+import org.smartlights.simulation.model.AuthUserDTO;
 import org.smartlights.simulation.model.DeviceDTO;
 import org.smartlights.simulation.model.DeviceDataDTO;
 import org.smartlights.simulation.model.DeviceType;
+import org.smartlights.simulation.model.UserDTO;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -20,6 +27,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
@@ -30,6 +38,8 @@ import java.util.logging.Logger;
 
 @Path("/simulate")
 @Transactional
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class SimulationResource {
     private static final Logger log = Logger.getLogger(SimulationResource.class.getName());
     private final String DEFAULT_SHARED_MAP = "DEFAULT_SHARED_MAP";
@@ -48,7 +58,57 @@ public class SimulationResource {
     DeviceDataService deviceDataService;
 
     @Inject
+    @RestClient
+    UserService userService;
+
+    @Inject
     Vertx vertx;
+
+    private UserDTO createUser(String username, String password, String... roles) {
+        UserDTO user = new UserDTO();
+        user.username = username;
+        user.password = password;
+        user.email = username + "@asd.com";
+        user.firstName = "John";
+        user.lastName = "Doe";
+        user.roles.addAll(Arrays.asList(roles));
+        return userService.createUser(user);
+    }
+
+    @GET
+    @Path("create-admin-user")
+    public Response createAdminUser(@QueryParam("username") @DefaultValue("admin") String username,
+                                    @QueryParam("password") @DefaultValue("password") String password) {
+        UserDTO user = createUser(username, password, UserRole.ADMIN);
+        return user != null ? Response.ok(user).build() : Response.status(Response.Status.BAD_REQUEST).build();
+    }
+
+    private String getAdminAccessToken() {
+        final String ADMIN_USERNAME = "admin";
+        final String ADMIN_PASSWORD = "password";
+
+        Optional.ofNullable(userService.getByUsername(ADMIN_USERNAME)).orElseGet(() -> {
+            Response response = createAdminUser(ADMIN_USERNAME, ADMIN_PASSWORD);
+            if (!(response.getEntity() instanceof UserDTO)) {
+                throw new BadRequestException("Cannot get admin");
+            }
+            return null;
+        });
+
+        AuthUserDTO authUserDTO = new AuthUserDTO();
+        authUserDTO.username = ADMIN_USERNAME;
+        authUserDTO.password = ADMIN_PASSWORD;
+
+        return userService.getAccessToken(authUserDTO);
+    }
+
+    @GET
+    @Path("test")
+    public String test() {
+        // Handle as admin
+        //AuthTokenUtil.setToken(Optional.ofNullable(getAdminAccessToken()).orElse("Cannot get admin token"));
+        return deviceDataService.test();
+    }
 
     /**
      * Create testing devices
@@ -57,9 +117,11 @@ public class SimulationResource {
      * @return Set of new devices
      */
     @GET
-    @Path("/create-testing-devices")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Path("create-testing-devices")
     public Set<DeviceDTO> createTestingDevices(@QueryParam("count") @DefaultValue("10") final Integer count) {
+        // Handle as admin
+        AuthTokenUtil.setToken(Optional.ofNullable(getAdminAccessToken()).orElse("Cannot get admin token"));
+
         Set<DeviceDTO> devices = new HashSet<>();
         final Random random = new Random();
         Long neighborsID = null;
@@ -91,7 +153,7 @@ public class SimulationResource {
      * @return
      */
     @GET
-    @Path("/send-data")
+    @Path("send-data")
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public Response sendData(@QueryParam("time") @DefaultValue("2000") Long time,
                              @QueryParam("count") @DefaultValue("200") Integer count,
@@ -118,7 +180,7 @@ public class SimulationResource {
                         try {
                             dataCount.set(dataCount.get() + 1);
                             log.info("Generated data set: " + dataCount + ". For " + finalDevices.size() + " devices.");
-                            finalDevices.forEach(f -> sendDataChoice(f));
+                            finalDevices.forEach(this::sendDataChoice);
                             if (dataCount.get() >= count) throw new RuntimeException("Achieved the total count.");
                         } catch (Exception e) {
                             log.warning("Stopped generating of data. " + e.getMessage());

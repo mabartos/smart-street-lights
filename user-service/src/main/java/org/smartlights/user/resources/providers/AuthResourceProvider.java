@@ -19,6 +19,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Optional;
 
+import static org.smartlights.user.utils.Constants.FIRSTNAME;
+import static org.smartlights.user.utils.Constants.LASTNAME;
+
 @Transactional
 @Path("auth")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -42,8 +45,9 @@ public class AuthResourceProvider implements AuthResource {
 
         return Jwt.subject(user.getEmail())
                 .upn(user.getUsername())
-                .issuer(user.getFirstName() + " " + user.getLastName())
                 .groups(user.getRoles())
+                .claim(FIRSTNAME, user.getFirstName())
+                .claim(LASTNAME, user.getLastName())
                 .sign();
     }
 

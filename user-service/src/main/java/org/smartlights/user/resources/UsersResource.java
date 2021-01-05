@@ -31,6 +31,10 @@ public interface UsersResource {
     Set<UserDTO> getAllUsers(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
                              @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults);
 
+    @GET
+    @Path("username/{username}")
+    UserDTO getByUsername(@PathParam("username") String username);
+
     @POST
     @PermitAll
     UserDTO createUser(UserDTO user);

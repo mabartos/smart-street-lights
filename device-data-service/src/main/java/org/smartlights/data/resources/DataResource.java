@@ -3,7 +3,7 @@ package org.smartlights.data.resources;
 
 import org.smartlights.data.dto.DeviceDataDTO;
 
-import javax.enterprise.context.RequestScoped;
+import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -15,12 +15,18 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import static org.smartlights.data.client.UserRole.ADMIN;
+
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/data")
 @Transactional
-@RequestScoped
 public interface DataResource {
+
+    @GET
+    @RolesAllowed(ADMIN)
+    @Path("test")
+    String test();
 
     @GET
     @Path("{id}")

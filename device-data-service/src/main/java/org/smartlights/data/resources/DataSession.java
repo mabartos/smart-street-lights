@@ -1,5 +1,6 @@
 package org.smartlights.data.resources;
 
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.smartlights.data.client.DeviceService;
 import org.smartlights.data.entity.repository.DeviceDataRepository;
@@ -18,6 +19,9 @@ public class DataSession {
     DataService dataService;
 
     @Inject
+    JsonWebToken token;
+
+    @Inject
     @RestClient
     DeviceService deviceService;
 
@@ -30,6 +34,10 @@ public class DataSession {
     public DataSession setActualDevice(Long deviceID) {
         this.actualDeviceID = deviceID;
         return this;
+    }
+
+    public JsonWebToken getToken() {
+        return token;
     }
 
     public DeviceDataRepository getDataRepository() {
