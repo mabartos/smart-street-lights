@@ -1,6 +1,11 @@
 package org.smartlights.user.resources.providers;
 
 import io.quarkus.security.Authenticated;
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.smartlights.user.data.UserDTO;
 import org.smartlights.user.data.UserRole;
 import org.smartlights.user.data.UserSerializer;
@@ -41,7 +46,9 @@ public class UsersResourceProvider implements UsersResource {
     UserSession session;
 
     @GET
-    @RolesAllowed({UserRole.ADMIN})
+    @RolesAllowed({UserRole.ADMIN, UserRole.SYS_ADMIN})
+    @Timed(name = "getAllUsers", description = "A measure of how long it takes to get all users (differ regarding the pagination).")
+    @CircuitBreaker
     public Set<UserDTO> getAllUsers(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
                                     @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
         return session.getUserRepository().getAll(firstResult, maxResults)
@@ -50,20 +57,28 @@ public class UsersResourceProvider implements UsersResource {
     }
 
     @GET
-    @PermitAll
     @Path("username/{username}")
+    @Timed(name = "getUserByUsername", description = "A measure of how long it takes to get user by username.")
+    @Retry
+    @Timeout
     public UserDTO getByUsername(@PathParam("username") String username) {
         return entityToModel(session.getUserRepository().getByUsername(username));
     }
 
     @POST
     @PermitAll
+    @Counted(name = "createUserCount", description = "How many users were created.")
+    @Timed(name = "createUserTime", description = "A measure of how long it takes to create an user.")
+    @Timeout
     public UserDTO createUser(UserDTO user) {
         return entityToModel(session.getUserRepository().create(modelToEntity(user)));
     }
 
     @PATCH
     @RolesAllowed({UserRole.ADMIN})
+    @Counted(name = "updateUserCount", description = "How many users were updated")
+    @Timed(name = "updateUserTime", description = "A measure of how long it takes to update user.")
+    @Timeout
     public UserDTO updateUser(UserDTO user) {
         return entityToModel(session.getUserRepository().update(modelToEntity(user)));
     }

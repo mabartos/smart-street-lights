@@ -2,6 +2,11 @@ package org.smartlights.user.resources.providers;
 
 import io.smallrye.jwt.build.Jwt;
 import org.apache.directory.api.ldap.model.password.BCrypt;
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.smartlights.user.data.AuthUserDTO;
 import org.smartlights.user.entity.UserEntity;
 import org.smartlights.user.resources.AuthResource;
@@ -35,6 +40,11 @@ public class AuthResourceProvider implements AuthResource {
     @POST
     @Path("token")
     @Produces(MediaType.TEXT_PLAIN)
+    @Counted(name = "countAccessToken", description = "How many access token has been released")
+    @Timed(name = "accessTokenReleaseTime", description = "A measure of how long it takes to provide token to the user.")
+    @CircuitBreaker
+    @Retry(maxRetries = 5)
+    @Timeout
     public String getAccessToken(AuthUserDTO authUserDTO) {
         UserEntity user = Optional.ofNullable(session.getUserRepository().getByUsername(authUserDTO.username))
                 .orElseThrow(this::badCredentialsException);

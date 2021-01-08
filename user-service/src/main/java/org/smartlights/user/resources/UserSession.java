@@ -6,6 +6,9 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+/**
+ * Handle user session within request
+ */
 @RequestScoped
 @Transactional
 public class UserSession {
@@ -15,10 +18,20 @@ public class UserSession {
 
     private Long userID;
 
+    /**
+     * Get connection to the User DB
+     *
+     * @return
+     */
     public UserRepository getUserRepository() {
         return userRepository;
     }
 
+    /**
+     * Get actual user within context
+     *
+     * @return id
+     */
     public Long getUserID() {
         return userID;
     }
