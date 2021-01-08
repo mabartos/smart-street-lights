@@ -14,6 +14,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASS}
     volumes:
       - ./data:/var/lib/${DB_NAME}
+    command: -p ${DB_PORT}
 
     # PROD
     #device-service:

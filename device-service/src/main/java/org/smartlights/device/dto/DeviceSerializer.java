@@ -12,6 +12,9 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Convert DTOs to Entities
+ */
 @ApplicationScoped
 public class DeviceSerializer {
 
@@ -28,6 +31,12 @@ public class DeviceSerializer {
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
     }
 
+    /**
+     * Convert model to entity
+     *
+     * @param deviceDTO
+     * @return entity
+     */
     public DeviceEntity modelToEntity(DeviceDTO deviceDTO) {
         DeviceEntity entity = mapper.convertValue(deviceDTO, DeviceEntity.class);
         entity.parent = deviceDTO.parentID != null && deviceDTO.parentID != -1 ? deviceRepository.getByID(deviceDTO.parentID) : null;
@@ -37,6 +46,12 @@ public class DeviceSerializer {
         return entity;
     }
 
+    /**
+     * Convert entity to model
+     *
+     * @param deviceEntity
+     * @return model
+     */
     public DeviceDTO entityToModel(DeviceEntity deviceEntity) {
         DeviceDTO dto = mapper.convertValue(deviceEntity, DeviceDTO.class);
         dto.parentID = Optional.ofNullable(deviceEntity.parent).map(f -> f.id).orElse(-1L);

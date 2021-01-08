@@ -7,6 +7,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.smartlights.device.entity.DeviceEntity;
 import org.smartlights.device.entity.repository.model.DeviceRepositoryModel;
 import org.smartlights.device.utils.ConflictException;
+import org.smartlights.device.utils.Constants;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.NoResultException;
@@ -55,17 +56,6 @@ public class DeviceRepository implements PanacheRepository<DeviceEntity>, Device
     }
 
     @Override
-    public DeviceEntity getByIDWithData(Long id) {
-        try {
-            TypedQuery<DeviceEntity> entity = getEntityManager().createNamedQuery("getDeviceWithData", DeviceEntity.class);
-            entity.setParameter("id", id);
-            return entity.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
-
-    @Override
     public DeviceEntity getBySerialNo(String serialNo) {
         return find("serialNo", serialNo).firstResult();
     }
@@ -82,7 +72,7 @@ public class DeviceRepository implements PanacheRepository<DeviceEntity>, Device
 
     public Stream<DeviceEntity> getAllFromStreet(String streetID, Integer firstResult, Integer maxResults) {
         TypedQuery<DeviceEntity> query = getEntityManager().createNamedQuery("getDevicesFromStreet", DeviceEntity.class);
-        query.setParameter("streetID", streetID);
+        query.setParameter(Constants.STREET_ID_PARAM, streetID);
         query.setFirstResult(firstResult);
         query.setMaxResults(maxResults);
         pagination(query, firstResult, maxResults);
@@ -93,7 +83,7 @@ public class DeviceRepository implements PanacheRepository<DeviceEntity>, Device
     @Override
     public Stream<DeviceEntity> getAllFromCity(String cityID, Integer firstResult, Integer maxResults) {
         TypedQuery<DeviceEntity> query = getEntityManager().createNamedQuery("getDevicesFromCity", DeviceEntity.class);
-        query.setParameter("cityID", cityID);
+        query.setParameter(Constants.CITY_ID_PARAM, cityID);
         query.setFirstResult(firstResult);
         query.setMaxResults(maxResults);
         pagination(query, firstResult, maxResults);

@@ -10,6 +10,9 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import java.util.logging.Logger;
 
+/**
+ * Helper class for testing DB
+ */
 @ApplicationScoped
 public class TestingData {
 
@@ -19,15 +22,22 @@ public class TestingData {
     @ConfigProperty(name = "device.testing-data", defaultValue = "false")
     Boolean generateTestingData;
 
+    @ConfigProperty(name = "device.testing-data.count", defaultValue = "10")
+    Integer entityCount;
+
     private static final Logger logger = Logger.getLogger(TestingData.class.getName());
 
+    /**
+     * Add testing data to database on Startup
+     *
+     * @param start
+     */
     public void addTestingData(@Observes StartupEvent start) {
         if (!generateTestingData) return;
 
-        final int ENTITY_COUNT = 10;
         logger.info("Adding testing data...");
 
-        for (int i = 0; i < ENTITY_COUNT; i++) {
+        for (int i = 0; i < entityCount; i++) {
             DeviceEntity entity = new DeviceEntity();
             entity.serialNo = "serial" + i;
             entity.streetID = i % 3L;

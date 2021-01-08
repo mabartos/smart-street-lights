@@ -11,6 +11,9 @@ import javax.ws.rs.ext.Provider;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+/**
+ * Helper class for exception handling
+ */
 @Provider
 public class ExceptionHandler implements ExceptionMapper<Throwable> {
 
