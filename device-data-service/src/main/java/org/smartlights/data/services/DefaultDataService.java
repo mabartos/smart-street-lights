@@ -39,6 +39,15 @@ public class DefaultDataService implements DataService {
         handleDataFromDifferentSources(null, data, KAFKA_SOURCE);
     }
 
+    /**
+     * Helper method for handling data from different sources
+     * TODO: With Kafka, data are not saved.
+     *
+     * @param deviceID
+     * @param data
+     * @param source
+     * @return state
+     */
     private boolean handleDataFromDifferentSources(Long deviceID, DeviceDataDTO data, String source) {
         logger.info("---------DATA---" + source + "-------");
         final Long finalDeviceID = Optional.ofNullable(deviceID).orElseGet(() -> data.deviceID);

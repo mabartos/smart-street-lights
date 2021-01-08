@@ -5,4 +5,5 @@ public interface UserRole {
     String ADMIN = "ADMIN";
     String MAINTAINER = "MAINTAINER";
     String USER = "USER";
+    String DEVICE = "DEVICE";
 }

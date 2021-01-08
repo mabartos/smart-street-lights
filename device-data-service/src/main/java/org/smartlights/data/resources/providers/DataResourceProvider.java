@@ -1,7 +1,9 @@
 package org.smartlights.data.resources.providers;
 
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.smartlights.data.dto.DataSerializer;
 import org.smartlights.data.dto.DeviceDataDTO;
@@ -10,7 +12,6 @@ import org.smartlights.data.resources.DataDeviceResource;
 import org.smartlights.data.resources.DataResource;
 import org.smartlights.data.resources.DataSession;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -29,6 +30,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.smartlights.data.client.UserRole.ADMIN;
+import static org.smartlights.data.client.UserRole.DEVICE;
+import static org.smartlights.data.client.UserRole.MAINTAINER;
+import static org.smartlights.data.client.UserRole.SYS_ADMIN;
 
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -52,6 +56,11 @@ public class DataResourceProvider implements DataResource {
 
     @GET
     @Path("{id}")
+    @RolesAllowed({SYS_ADMIN, ADMIN, MAINTAINER})
+    @Counted(name = "getDataByIDCount", description = "Get data by ID.")
+    @Timed(name = "getDataByIDTime", description = "A measure of how long it takes to get data by ID.")
+    @Timeout
+    @Retry
     public DeviceDataDTO getByID(@PathParam("id") Long id) {
         DeviceDataEntity entity = session.getDataRepository().getByID(id);
         return DataSerializer.entityToModel(Optional.ofNullable(entity)
@@ -59,18 +68,29 @@ public class DataResourceProvider implements DataResource {
     }
 
     @POST
-    @Timed(name = "handleOnlyData", description = "Handle only data SYNC", unit = MetricUnits.MILLISECONDS)
+    @RolesAllowed({DEVICE})
+    @Counted(name = "handleOnlyDataCount", description = "Handle data.")
+    @Timed(name = "handleOnlyDataTime", description = "A measure of how long it takes to handle data.")
+    @Timeout
     public Response handleData(DeviceDataDTO data) {
         return session.getDataService().handleData(data) ? Response.ok().build() : Response.status(Response.Status.BAD_REQUEST).build();
     }
 
     @DELETE
     @Path("{id}")
+    @RolesAllowed({SYS_ADMIN, ADMIN, MAINTAINER})
+    @Counted(name = "removeDataByIDCount", description = "Count of removed data.")
+    @Timed(name = "removeDataByIDTime", description = "A measure of how long it takes to remove data by ID.")
+    @Timeout
     public Response removeByID(@PathParam("id") Long id) {
         return session.getDataRepository().removeByID(id) ? Response.ok().build() : Response.status(Response.Status.BAD_REQUEST).build();
     }
 
     @DELETE
+    @RolesAllowed({SYS_ADMIN, ADMIN, MAINTAINER})
+    @Counted(name = "removeAllDataByIDCount", description = "Count of removed data.")
+    @Timed(name = "removeAllDataByIDTime", description = "A measure of how long it takes to remove data by IDs.")
+    @Timeout
     public Response removeAllByID(Set<Long> ids) {
         return session.getDataRepository().removeByIDs(ids) ? Response.ok().build() : Response.status(Response.Status.BAD_REQUEST).build();
     }
