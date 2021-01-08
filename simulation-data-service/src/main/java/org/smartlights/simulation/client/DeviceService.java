@@ -16,6 +16,9 @@ import java.util.Set;
 import static org.smartlights.simulation.client.AuthTokenUtil.AUTHORIZATION_FIELD;
 import static org.smartlights.simulation.client.AuthTokenUtil.AUTHORIZATION_METHOD_PATH;
 
+/**
+ * Remote Device service
+ */
 @RegisterRestClient(configKey = "device-service")
 @Path("/api/devices")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -23,6 +26,7 @@ import static org.smartlights.simulation.client.AuthTokenUtil.AUTHORIZATION_METH
 public interface DeviceService {
 
     @GET
+    @ClientHeaderParam(name = AUTHORIZATION_FIELD, value = AUTHORIZATION_METHOD_PATH, required = false)
     Set<DeviceDTO> getAllDevices(@QueryParam("firstResult") Integer firstResult,
                                  @QueryParam("maxResults") Integer maxResults);
 

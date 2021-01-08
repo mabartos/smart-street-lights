@@ -16,6 +16,9 @@ import javax.ws.rs.core.Response;
 import static org.smartlights.simulation.client.AuthTokenUtil.AUTHORIZATION_FIELD;
 import static org.smartlights.simulation.client.AuthTokenUtil.AUTHORIZATION_METHOD_PATH;
 
+/**
+ * Remote Device Data service
+ */
 @RegisterRestClient(configKey = "device-data-service")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
