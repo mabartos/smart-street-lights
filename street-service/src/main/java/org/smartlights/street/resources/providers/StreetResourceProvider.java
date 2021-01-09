@@ -3,9 +3,13 @@ package org.smartlights.street.resources.providers;
 import org.smartlights.street.dtos.StreetDTO;
 import org.smartlights.street.resources.StreetResource;
 import org.smartlights.street.resources.StreetSession;
+import org.smartlights.street.client.UserRole;
 
+import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -24,12 +28,14 @@ public class StreetResourceProvider implements StreetResource {
         this.streetID = session.getStreetID();
     }
 
-    @Override
+    @GET
+    @RolesAllowed({UserRole.ADMIN, UserRole.SYS_ADMIN, UserRole.MAINTAINER})
     public StreetDTO getByID() {
         return entityToModel(session.getStreetRepository().getById(streetID));
     }
 
-    @Override
+    @DELETE
+    @RolesAllowed({UserRole.ADMIN, UserRole.SYS_ADMIN})
     public boolean removeStreet() {
         return session.getStreetRepository().deleteStreetByID(streetID);
     }

@@ -1,9 +1,11 @@
 package org.smartlights.city.resources.providers;
 
+import org.smartlights.city.client.UserRole;
 import org.smartlights.city.dtos.CityDTO;
 import org.smartlights.city.resources.CityResource;
 import org.smartlights.city.resources.CitySession;
 
+import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -27,11 +29,13 @@ public class CityResourceProvider implements CityResource {
     }
 
     @GET
+    @RolesAllowed({UserRole.SYS_ADMIN, UserRole.ADMIN, UserRole.MAINTAINER})
     public CityDTO getByID() {
         return entityToModel(session.getCityRepository().getById(cityId));
     }
 
     @DELETE
+    @RolesAllowed({UserRole.SYS_ADMIN, UserRole.ADMIN})
     public boolean removeCity() {
         return session.getCityRepository().deleteCityByID(cityId);
     }

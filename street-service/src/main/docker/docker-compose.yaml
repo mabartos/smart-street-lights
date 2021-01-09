@@ -1,0 +1,29 @@
+version: '3.1'
+
+services:
+  street-db:
+    image: postgres
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    restart: ${DB_RESTART_TYPE}
+    environment:
+      POSTGRES_URL: ${DB_URL}
+      POSTGRES_PORT: ${DB_PORT}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    volumes:
+      - ./data:/var/lib/${DB_NAME}
+    command: -p ${DB_PORT}
+
+    # PROD
+    #street-service:
+    # image: quarkus/street-service-jvm
+    #restart: on-failure
+    #build:
+    #  context: .
+    #  dockerfile: Dockerfile.jvm
+    #ports:
+    #  - "8080:8080"
+    #depends_on:
+    #  - street-db

@@ -1,5 +1,9 @@
 package org.smartlights.city.resources.providers;
 
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.eclipse.microprofile.metrics.annotation.Timed;
+import org.smartlights.city.client.UserRole;
 import org.smartlights.city.dtos.CityDTO;
 import org.smartlights.city.dtos.CitySerialiser;
 import org.smartlights.city.resources.CitiesResource;
@@ -9,6 +13,8 @@ import org.smartlights.city.utils.Constants;
 import static org.smartlights.city.dtos.CitySerialiser.entityToModel;
 import static org.smartlights.city.dtos.CitySerialiser.modelToEntity;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -33,6 +39,8 @@ public class CitiesResourceProvider implements CitiesResource {
     }
 
     @GET
+    @PermitAll
+    @CircuitBreaker
     public Set<CityDTO> getAllCities(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
                                      @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
         return session.getCityRepository().getAll(firstResult, maxResults)
@@ -40,12 +48,14 @@ public class CitiesResourceProvider implements CitiesResource {
                 .collect(Collectors.toSet());
     }
 
-    @Override
+    @POST
+    @RolesAllowed({UserRole.SYS_ADMIN, UserRole.ADMIN})
     public CityDTO create(CityDTO city) {
         return entityToModel(session.getCityRepository().create(modelToEntity(city)));
     }
 
-    @Override
+    @PUT
+    @RolesAllowed({UserRole.ADMIN, UserRole.SYS_ADMIN})
     public CityDTO update(CityDTO city) {
         return entityToModel(session.getCityRepository().update(modelToEntity(city)));
     }
