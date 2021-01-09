@@ -2,18 +2,48 @@ package org.smartlights.user.entity.repository;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.runtime.StartupEvent;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.smartlights.user.data.UserRole;
 import org.smartlights.user.entity.UserEntity;
 import org.smartlights.user.entity.repository.model.UserRepositoryModel;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 @Transactional
 @ApplicationScoped
 public class UserRepository implements PanacheRepository<UserEntity>, UserRepositoryModel {
+
+    private static final Logger logger = Logger.getLogger(UserRepository.class.getName());
+
+    @ConfigProperty(name = "createAdmin", defaultValue = "false")
+    Boolean createAdminUser;
+
+    public void createAdmin(@Observes StartupEvent start) {
+        if (!createAdminUser) return;
+
+        UserEntity entity = new UserEntity();
+        entity.setUsername("admin");
+        entity.setPassword("admin");
+        entity.setFirstName("Admin");
+        entity.setLastName("Admin");
+        entity.setEmail("admin@admin.com");
+        Set<String> roles = new HashSet<>();
+        roles.add(UserRole.SYS_ADMIN);
+        roles.add(UserRole.ADMIN);
+        entity.setRoles(roles);
+
+        final String message = create(entity) != null ? "Admin created." : "Cannot create admin user.";
+        logger.info(message);
+    }
 
     @Override
     public Stream<UserEntity> getAll(Integer firstResult, Integer maxResults) {

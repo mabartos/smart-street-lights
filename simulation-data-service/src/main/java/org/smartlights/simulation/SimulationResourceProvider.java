@@ -16,6 +16,7 @@ import org.smartlights.simulation.model.DeviceDTO;
 import org.smartlights.simulation.model.DeviceDataDTO;
 import org.smartlights.simulation.model.DeviceType;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -33,6 +34,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
+
+import static org.smartlights.simulation.client.UserRole.SYS_ADMIN;
 
 @Path("/simulate")
 @Transactional
@@ -61,6 +64,7 @@ public class SimulationResourceProvider implements SimulationResource {
 
     @GET
     @Path("create-testing-devices")
+    @RolesAllowed({SYS_ADMIN})
     @Counted(name = "createTestingDevicesCount", description = "Create testing devices counter.")
     @Timed(name = "createTestingDevicesTime", description = "A measure of how long it takes to create testing devices (different count of devices!!).")
     @Timeout
@@ -88,12 +92,13 @@ public class SimulationResourceProvider implements SimulationResource {
 
     @GET
     @Path("send-data")
+    @RolesAllowed({SYS_ADMIN})
     @Produces(MediaType.SERVER_SENT_EVENTS)
     @Counted(name = "sendDataCount", description = "Send data counter.")
     @Timeout
     @Retry
     public Response sendData(@QueryParam("time") @DefaultValue("2000") Long time,
-                             @QueryParam("count") @DefaultValue("200") Integer count,
+                             @QueryParam("count") @DefaultValue("5") Integer count,
                              @QueryParam("firstResult") Integer firstResult,
                              @QueryParam("maxResults") Integer maxResults,
                              @QueryParam("single") @DefaultValue("true") Boolean executeAsSingle) {

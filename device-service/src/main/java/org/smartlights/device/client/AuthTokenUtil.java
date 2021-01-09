@@ -15,7 +15,7 @@ import java.util.Optional;
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class AuthTokenUtil implements ContainerRequestFilter {
-    private static final String CLASS_PATH = "org.smartlights.device.client";
+    private static final String CLASS_PATH = "org.smartlights.device.client.AuthTokenUtil";
     private static final String METHOD_NAME = "addAuthorizationHeader";
 
     public static final String AUTHORIZATION_FIELD = "Authorization";
