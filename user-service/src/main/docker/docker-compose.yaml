@@ -16,14 +16,17 @@ services:
       - ./data:/var/lib/${DB_NAME}
     command: -p ${DB_PORT}
 
-    # PROD
-    #user-service:
-    # image: quarkus/user-service-jvm
-    #restart: on-failure
-    #build:
-    #  context: .
-    #  dockerfile: Dockerfile.jvm
-    #ports:
-    #  - "8080:8080"
-    #depends_on:
-    #  - user-db
+  user-service:
+    image: quarkus/user-service-fast-jar
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: Dockerfile.fast-jar
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    env_file:
+      - .env
+    depends_on:
+      - user-db
+    environment:
+      createAdmin: ${CREATE_ADMIN_FLAG}

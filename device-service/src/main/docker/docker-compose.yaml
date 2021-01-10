@@ -6,6 +6,8 @@ services:
     ports:
       - "${DB_PORT}:${DB_PORT}"
     restart: ${DB_RESTART_TYPE}
+    env_file:
+      - .env
     environment:
       POSTGRES_URL: ${DB_URL}
       POSTGRES_PORT: ${DB_PORT}
@@ -16,14 +18,15 @@ services:
       - ./data:/var/lib/${DB_NAME}
     command: -p ${DB_PORT}
 
-    # PROD
-    #device-service:
-    # image: quarkus/device-service-jvm
-    #restart: on-failure
-    #build:
-    #  context: .
-    #  dockerfile: Dockerfile.jvm
-    #ports:
-    #  - "8080:8080"
-    #depends_on:
-    #  - device-db
+  device-service:
+    image: quarkus/device-service-fast-jar
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: Dockerfile.fast-jar
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    env_file:
+      - .env
+    depends_on:
+      - device-db

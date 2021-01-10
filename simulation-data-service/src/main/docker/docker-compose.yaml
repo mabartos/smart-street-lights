@@ -23,10 +23,23 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "9092:9092"
+      - "${KAFKA_PORT}:${KAFKA_PORT}"
     environment:
       LOG_DIR: "/tmp/logs"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:${KAFKA_PORT}
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:${KAFKA_PORT}
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
 
+  simulation-service:
+    image: quarkus/simulation-service-fast-jar
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: Dockerfile.fast-jar
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    env_file:
+      - .env
+    depends_on:
+      - kafka
+      - zookeeper
