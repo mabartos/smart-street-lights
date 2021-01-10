@@ -6,6 +6,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.smartlights.simulation.model.CityDTO;
 import org.smartlights.simulation.model.DeviceDTO;
 
 import javax.annotation.security.RolesAllowed;
@@ -14,6 +15,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -45,7 +47,20 @@ public interface SimulationResource {
             @APIResponse(responseCode = "401", description = "Unauthorized"),
             @APIResponse(responseCode = "400", description = "Bad request")
     })
-    Set<DeviceDTO> createTestingDevices(@QueryParam("count") @DefaultValue("10") final Integer count);
+    Set<DeviceDTO> createTestingDevices(@QueryParam("count") @DefaultValue("10") final Integer count,
+                                        @QueryParam("includeCities") @DefaultValue("false") Boolean includeCities);
+
+    @GET
+    @Path("create-testing-cities")
+    @RolesAllowed({SYS_ADMIN})
+    @Operation(summary = "Create testing cities")
+    @APIResponses(value = {
+            @APIResponse(responseCode = "200", description = "Success",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = CityDTO.class))),
+            @APIResponse(responseCode = "401", description = "Unauthorized"),
+            @APIResponse(responseCode = "400", description = "Bad request")
+    })
+    Set<CityDTO> createTestingCities(@QueryParam("count") @DefaultValue("10") final Integer count);
 
     /**
      * This resource periodically generates data from devices.
@@ -72,5 +87,20 @@ public interface SimulationResource {
                       @QueryParam("count") @DefaultValue("200") Integer count,
                       @QueryParam("firstResult") Integer firstResult,
                       @QueryParam("maxResults") Integer maxResults,
-                      @QueryParam("single") @DefaultValue("true") Boolean executeAsSingle);
+                      @QueryParam("single") @DefaultValue("true") Boolean executeAsSingle,
+                      @QueryParam("includeCities") @DefaultValue("true") Boolean includeCities);
+
+    @GET
+    @Path("send-data-specific/{serial}")
+    @RolesAllowed({SYS_ADMIN})
+    @Operation(summary = "Send simulated data to specific device")
+    @APIResponses(value = {
+            @APIResponse(responseCode = "200", description = "Success",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Response.class))),
+            @APIResponse(responseCode = "401", description = "Unauthorized"),
+            @APIResponse(responseCode = "400", description = "Bad request")
+    })
+    Response sendDataSpecific(@PathParam("serial") String serialNo,
+                              @QueryParam("time") @DefaultValue("2000") Long time,
+                              @QueryParam("count") @DefaultValue("5") Integer count);
 }

@@ -24,7 +24,8 @@ import java.util.Set;
         @NamedQuery(name = "getDeviceByID", query = "select device from DeviceEntity device left join fetch device.parent where device.id=:id"),
         @NamedQuery(name = "getWholeDevice", query = "select device from DeviceEntity device left join fetch device.neighbors left join fetch device.parent where device.id=:id"),
         @NamedQuery(name = "getDevicesFromStreet", query = "select device from DeviceEntity device where device.streetID=:streetID"),
-        @NamedQuery(name = "getDevicesFromCity", query = "select device from DeviceEntity device where device.cityID=:cityID")
+        @NamedQuery(name = "getDevicesFromCity", query = "select device from DeviceEntity device where device.cityID=:cityID"),
+        @NamedQuery(name = "getDeviceBySerialNo", query = "select device from DeviceEntity device where device.serialNo=:serialNo")
 })
 public class DeviceEntity extends PanacheEntity {
     @Column(unique = true, nullable = false)

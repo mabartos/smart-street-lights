@@ -57,7 +57,9 @@ public class DeviceRepository implements PanacheRepository<DeviceEntity>, Device
 
     @Override
     public DeviceEntity getBySerialNo(String serialNo) {
-        return find("serialNo", serialNo).firstResult();
+        TypedQuery<DeviceEntity> query = getEntityManager().createNamedQuery("getDeviceBySerialNo", DeviceEntity.class);
+        query.setParameter("serialNo", serialNo);
+        return query.getSingleResult();
     }
 
     @Override

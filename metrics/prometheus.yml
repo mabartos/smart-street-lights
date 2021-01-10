@@ -1,0 +1,28 @@
+# prometheus.yml
+global:
+  scrape_interval: 1s
+  external_labels:
+    monitor: 'monitor'
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: [ 'localhost:9090' ]
+  - job_name: 'device-service'
+    static_configs:
+      - targets: [ 'localhost:8081' ]
+  - job_name: 'simulation-service'
+    static_configs:
+      - targets: [ 'localhost:8082' ]
+  - job_name: 'data-service'
+    static_configs:
+      - targets: [ 'localhost:8083' ]
+  - job_name: 'user-service'
+    static_configs:
+      - targets: [ 'localhost:8084' ]
+  - job_name: 'city-service'
+    static_configs:
+      - targets: [ 'localhost:8085' ]
+  - job_name: 'street-service'
+    static_configs:
+      - targets: [ 'localhost:8086' ]

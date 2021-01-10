@@ -18,6 +18,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
@@ -82,20 +83,21 @@ public class DefaultDataService implements DataService {
     private void updateMetrics(DeviceDataDTO data) {
         Function<String, String> getMetricString = (key) -> Constants.DEVICE_NAME + "-" + data.serialNo + "-" + key;
 
-        Function<String, Metadata> metadata = (key) -> Metadata.builder()
+        BiFunction<String, MetricType, Metadata> metadata = (key, metricType) -> Metadata.builder()
                 .withName(getMetricString.apply(key))
                 .withDisplayName("Device no. " + data.serialNo)
-                .withType(MetricType.GAUGE)
+                .withType(metricType)
                 .reusable()
                 .build();
 
+        metricRegistry.counter(metadata.apply("dataCount", MetricType.COUNTER)).inc();
+
         data.values.forEach((key, value) -> {
-            //TODO repair lately
             if (metricRegistry.getMetricIDs().contains(new MetricID(getMetricString.apply(key)))) {
                 metricRegistry.remove(getMetricString.apply(key));
             }
 
-            metricRegistry.register(metadata.apply(key), (Gauge<Object>) () -> convert(value));
+            metricRegistry.register(metadata.apply(key, MetricType.GAUGE), (Gauge<Object>) () -> convert(value));
         });
     }
 

@@ -1,0 +1,1 @@
+ docker run --rm --name prometheus -p 9090:9090 --network host -v `pwd`/prometheus.yml:/etc/prometheus/prometheus.yml:Z prom/prometheus:v2.14.0 --config.file=/etc/prometheus/prometheus.yml & docker run --rm -p 3000:3000 --network host grafana/grafana:6.4.4

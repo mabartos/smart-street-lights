@@ -58,6 +58,10 @@ which takes the `maxResults` items from `firstResult` index.
 <li>...</li>
 </ul>
 
+#### Basic metrics
+Collected metrics about device values, where the data are simulated.
+![Device-Metrics](metrics/deviceMetrics.png)
+
 
 
 
