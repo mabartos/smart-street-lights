@@ -73,6 +73,13 @@ public interface DeviceRepositoryModel {
     Stream<DeviceEntity> getAll(Integer firstResult, Integer maxResults);
 
     /**
+     * Get all Devices
+     *
+     * @return stream of devices
+     */
+    Stream<DeviceEntity> getAll();
+
+    /**
      * Get all Devices by street ID
      *
      * @param firstResult index of the first required user

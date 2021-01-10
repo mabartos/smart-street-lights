@@ -101,6 +101,11 @@ public class DeviceRepository implements PanacheRepository<DeviceEntity>, Device
     }
 
     @Override
+    public Stream<DeviceEntity> getAll() {
+        return getAll(null, null);
+    }
+
+    @Override
     public boolean deleteDevice(DeviceEntity deviceEntity) {
         if (isPersistent(deviceEntity)) {
             delete(deviceEntity);
