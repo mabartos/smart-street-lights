@@ -1,5 +1,6 @@
 package org.smartlights.city.resources.providers;
 
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.smartlights.city.client.UserRole;
 import org.smartlights.city.dtos.CityDTO;
 import org.smartlights.city.resources.CityResource;
@@ -30,12 +31,14 @@ public class CityResourceProvider implements CityResource {
 
     @GET
     @RolesAllowed({UserRole.SYS_ADMIN, UserRole.ADMIN, UserRole.MAINTAINER})
+    @Timed(name = "getCityByIdTime", description = "A measure of how long it takes to get city by ID.")
     public CityDTO getByID() {
         return entityToModel(session.getCityRepository().getById(cityId));
     }
 
     @DELETE
     @RolesAllowed({UserRole.SYS_ADMIN, UserRole.ADMIN})
+    @Timed(name = "removeCity", description = "A measure of how long it takes to delete city by ID.")
     public boolean removeCity() {
         return session.getCityRepository().deleteCityByID(cityId);
     }

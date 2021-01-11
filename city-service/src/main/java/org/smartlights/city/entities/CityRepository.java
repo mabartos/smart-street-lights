@@ -5,8 +5,10 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import org.hibernate.exception.ConstraintViolationException;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.util.stream.Stream;
 
+@ApplicationScoped
 public class CityRepository implements PanacheRepository<CityEntity>, CityRepositoryModel {
     public static final int PAGE_COUNT = 100;
 
@@ -50,6 +52,7 @@ public class CityRepository implements PanacheRepository<CityEntity>, CityReposi
     public boolean deleteCityByID(Long id) {
         return deleteById(id);
     }
+
 
     @Override
     public CityEntity update(CityEntity cityEntity) {

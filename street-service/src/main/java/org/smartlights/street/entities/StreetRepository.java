@@ -6,9 +6,11 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import org.hibernate.exception.ConstraintViolationException;
 import org.smartlights.street.utils.StreetCategory;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.TypedQuery;
 import java.util.stream.Stream;
 
+@ApplicationScoped
 public class StreetRepository implements PanacheRepository<StreetEntity>, StreetRepositoryModel {
     public static final int PAGE_COUNT = 100;
 
@@ -57,6 +59,7 @@ public class StreetRepository implements PanacheRepository<StreetEntity>, Street
         return query.getResultList().stream();
     }
 
+
     @Override
     public boolean deleteStreet(StreetEntity streetEntity) {
         if (isPersistent(streetEntity)) {
@@ -70,6 +73,7 @@ public class StreetRepository implements PanacheRepository<StreetEntity>, Street
     public boolean deleteStreetByID(Long id) {
         return deleteById(id);
     }
+
 
     @Override
     public StreetEntity update(StreetEntity streetEntity) {

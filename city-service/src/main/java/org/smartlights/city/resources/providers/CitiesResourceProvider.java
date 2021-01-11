@@ -2,6 +2,7 @@ package org.smartlights.city.resources.providers;
 
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.smartlights.city.client.UserRole;
 import org.smartlights.city.dtos.CityDTO;
@@ -40,6 +41,7 @@ public class CitiesResourceProvider implements CitiesResource {
 
     @GET
     @PermitAll
+    @Timed(name = "getAllCities", description = "A measure of how long it takes to get a list of all cities.")
     @CircuitBreaker
     public Set<CityDTO> getAllCities(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
                                      @QueryParam(Constants.MAX_RESULTS_PARAM) Integer maxResults) {
@@ -50,12 +52,15 @@ public class CitiesResourceProvider implements CitiesResource {
 
     @POST
     @RolesAllowed({UserRole.SYS_ADMIN, UserRole.ADMIN})
+    @Counted(name = "createCityCount", description = "How many cities have been created.")
+    @Timed(name = "createCityTime", description = "A measure of how long it takes to create a city.")
     public CityDTO create(CityDTO city) {
         return entityToModel(session.getCityRepository().create(modelToEntity(city)));
     }
 
     @PUT
     @RolesAllowed({UserRole.ADMIN, UserRole.SYS_ADMIN})
+    @Timed(name = "updateCity", description = "A measure of how long it takes to update a city.")
     public CityDTO update(CityDTO city) {
         return entityToModel(session.getCityRepository().update(modelToEntity(city)));
     }

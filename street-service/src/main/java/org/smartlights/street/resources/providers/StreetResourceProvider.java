@@ -1,5 +1,6 @@
 package org.smartlights.street.resources.providers;
 
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.smartlights.street.dtos.StreetDTO;
 import org.smartlights.street.resources.StreetResource;
 import org.smartlights.street.resources.StreetSession;
@@ -29,12 +30,14 @@ public class StreetResourceProvider implements StreetResource {
     }
 
     @GET
+    @Timed(name = "getStreetByIdTime", description = "A measure of how long it takes to get street by ID.")
     @RolesAllowed({UserRole.ADMIN, UserRole.SYS_ADMIN, UserRole.MAINTAINER})
     public StreetDTO getByID() {
         return entityToModel(session.getStreetRepository().getById(streetID));
     }
 
     @DELETE
+    @Timed(name = "removeStreet", description = "A measure of how long it takes to delete street by ID.")
     @RolesAllowed({UserRole.ADMIN, UserRole.SYS_ADMIN})
     public boolean removeStreet() {
         return session.getStreetRepository().deleteStreetByID(streetID);
