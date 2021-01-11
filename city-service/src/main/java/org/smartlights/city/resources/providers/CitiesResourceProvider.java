@@ -1,7 +1,6 @@
 package org.smartlights.city.resources.providers;
 
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
-import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.smartlights.city.client.UserRole;
@@ -11,8 +10,6 @@ import org.smartlights.city.resources.CitiesResource;
 import org.smartlights.city.resources.CityResource;
 import org.smartlights.city.resources.CitySession;
 import org.smartlights.city.utils.Constants;
-import static org.smartlights.city.dtos.CitySerialiser.entityToModel;
-import static org.smartlights.city.dtos.CitySerialiser.modelToEntity;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -24,6 +21,9 @@ import javax.ws.rs.core.MediaType;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.smartlights.city.dtos.CitySerialiser.entityToModel;
+import static org.smartlights.city.dtos.CitySerialiser.modelToEntity;
+
 @Path("/cities")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -34,8 +34,11 @@ public class CitiesResourceProvider implements CitiesResource {
     @Inject
     CitySession session;
 
+    @Inject
+    CitySerialiser serialiser;
+
     @Path("{id}")
-    public CityResource forwardToCity(@PathParam("id") Long cityID, CitySession session) {
+    public CityResource forwardToCity(@PathParam("id") Long cityID) {
         return new CityResourceProvider(session.setCityID(cityID));
     }
 

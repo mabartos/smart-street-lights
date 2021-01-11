@@ -1,5 +1,7 @@
 package org.smartlights.city.entities;
 
+import org.smartlights.city.entities.CityEntity;
+
 import java.util.stream.Stream;
 
 public interface CityRepositoryModel {

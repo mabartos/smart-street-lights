@@ -14,7 +14,7 @@ import org.smartlights.city.utils.Constants;
 public interface CitiesResource {
 
     @Path("/{id}")
-    CityResource forwardToCity(@PathParam("id") Long id, CitySession session);
+    CityResource forwardToCity(@PathParam("id") Long id);
 
     @GET
     Set<CityDTO> getAllCities(@QueryParam(Constants.FIRST_RESULT_PARAM) Integer firstResult,
