@@ -45,7 +45,7 @@ services:
       - ./data:/var/lib/${DB_NAME}
     command: -p ${DB_PORT}
 
-  device-service:
+  device-data-service:
     image: quarkus/data-service-fast-jar
     restart: on-failure
     build:

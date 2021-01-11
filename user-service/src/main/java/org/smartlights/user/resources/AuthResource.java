@@ -31,6 +31,7 @@ public interface AuthResource {
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = "Success",
                     content = @Content(mediaType = MediaType.TEXT_PLAIN, schema = @Schema(implementation = String.class))),
+            @APIResponse(responseCode = "400", description = "No data provided"),
             @APIResponse(responseCode = "404", description = "User not found"),
             @APIResponse(responseCode = "401", description = "Unauthorized")
     })

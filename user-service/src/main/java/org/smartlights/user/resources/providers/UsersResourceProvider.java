@@ -19,6 +19,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PATCH;
@@ -70,7 +71,7 @@ public class UsersResourceProvider implements UsersResource {
     @Counted(name = "createUserCount", description = "How many users were created.")
     @Timed(name = "createUserTime", description = "A measure of how long it takes to create an user.")
     @Timeout
-    public UserDTO createUser(UserDTO user) {
+    public UserDTO createUser(@NotNull UserDTO user) {
         return entityToModel(session.getUserRepository().create(modelToEntity(user)));
     }
 
@@ -79,7 +80,7 @@ public class UsersResourceProvider implements UsersResource {
     @Counted(name = "updateUserCount", description = "How many users were updated")
     @Timed(name = "updateUserTime", description = "A measure of how long it takes to update user.")
     @Timeout
-    public UserDTO updateUser(UserDTO user) {
+    public UserDTO updateUser(@NotNull UserDTO user) {
         return entityToModel(session.getUserRepository().update(modelToEntity(user)));
     }
 

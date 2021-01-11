@@ -6,6 +6,7 @@ import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
+import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.RegistryType;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
@@ -38,12 +39,14 @@ public class DefaultDataService implements DataService {
 
     @Override
     @Timed(name = "handleDataSource")
+    @Counted(name = "handleDataSourceCount")
     public boolean handleData(DeviceDataDTO data) {
         return handleData(null, data);
     }
 
     @Override
     @Timed(name = "handleDataSource")
+    @Counted(name = "handleDataSourceCount")
     public boolean handleData(Long deviceID, DeviceDataDTO data) {
         return handleDataFromDifferentSources(deviceID, data, REST_SOURCE);
     }

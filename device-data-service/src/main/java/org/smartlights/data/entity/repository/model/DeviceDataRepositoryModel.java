@@ -4,7 +4,7 @@ package org.smartlights.data.entity.repository.model;
 import org.smartlights.data.dto.DeviceDataDTO;
 import org.smartlights.data.entity.DeviceDataEntity;
 
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -65,10 +65,10 @@ public interface DeviceDataRepositoryModel {
      * Get data newer than timestamp
      *
      * @param deviceID
-     * @param timestamp
+     * @param date
      * @return data
      */
-    Stream<DeviceDataEntity> getAllRecentThan(Long deviceID, Timestamp timestamp);
+    Stream<DeviceDataEntity> getAllRecentThan(Long deviceID, Date date);
 
     /**
      * Get data newer than timestamp with pagination
@@ -79,7 +79,7 @@ public interface DeviceDataRepositoryModel {
      * @param maxResults  count of results from the firstResult
      * @return data
      */
-    Stream<DeviceDataEntity> getAllRecentThan(Long deviceID, Timestamp timestamp, Integer firstResult, Integer maxResults);
+    Stream<DeviceDataEntity> getAllRecentThan(Long deviceID, Date date, Integer firstResult, Integer maxResults);
 
     /**
      * Get data older than timestamp with pagination
@@ -88,7 +88,7 @@ public interface DeviceDataRepositoryModel {
      * @param timestamp
      * @return data
      */
-    Stream<DeviceDataEntity> getAllOlderThan(Long deviceID, Timestamp timestamp);
+    Stream<DeviceDataEntity> getAllOlderThan(Long deviceID, Date date);
 
     /**
      * Get data older than timestamp with pagination
@@ -99,7 +99,7 @@ public interface DeviceDataRepositoryModel {
      * @param maxResults  count of results from the firstResult
      * @return data
      */
-    Stream<DeviceDataEntity> getAllOlderThan(Long deviceID, Timestamp timestamp, Integer firstResult, Integer maxResults);
+    Stream<DeviceDataEntity> getAllOlderThan(Long deviceID, Date date, Integer firstResult, Integer maxResults);
 
     /**
      * Get data by ID
@@ -132,7 +132,7 @@ public interface DeviceDataRepositoryModel {
      * @param timestamp
      * @return state
      */
-    boolean removeOlderThan(Long deviceID, Timestamp timestamp);
+    boolean removeOlderThan(Long deviceID, Date date);
 
     /**
      * Get count of data for device

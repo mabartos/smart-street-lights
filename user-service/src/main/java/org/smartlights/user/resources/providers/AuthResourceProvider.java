@@ -15,6 +15,7 @@ import org.smartlights.user.resources.UserSession;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -46,6 +47,8 @@ public class AuthResourceProvider implements AuthResource {
     @Retry(maxRetries = 5)
     @Timeout
     public String getAccessToken(AuthUserDTO authUserDTO) {
+        authUserDTO = Optional.ofNullable(authUserDTO).orElseThrow(() -> new BadRequestException("You have to provide auth body."));
+
         UserEntity user = Optional.ofNullable(session.getUserRepository().getByUsername(authUserDTO.username))
                 .orElseThrow(this::badCredentialsException);
 
