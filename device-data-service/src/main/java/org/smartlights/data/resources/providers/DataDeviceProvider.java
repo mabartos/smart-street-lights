@@ -7,6 +7,7 @@ import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
+import org.smartlights.data.client.DeviceDTO;
 import org.smartlights.data.dto.DataSerializer;
 import org.smartlights.data.dto.DeviceDataDTO;
 import org.smartlights.data.resources.DataDeviceResource;
@@ -18,6 +19,7 @@ import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -26,6 +28,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,6 +57,7 @@ public class DataDeviceProvider implements DataDeviceResource {
     @Timed(name = "handleDataTime", description = "A measure of how long it takes to handle data.")
     @Timeout
     public Response handleData(DeviceDataDTO data) {
+        Optional.ofNullable(session.getDeviceService().getByID(deviceID)).orElseThrow(() -> new NotFoundException("Device not found"));
         return session.getDataService().handleData(deviceID, data) ? Response.ok().build() : Response.status(Response.Status.BAD_REQUEST).build();
     }
 

@@ -76,7 +76,6 @@ public class SimulationResourceProvider implements SimulationResource {
     @RolesAllowed({SYS_ADMIN})
     @Counted(name = "createTestingDevicesCount", description = "Create testing devices counter.")
     @Timed(name = "createTestingDevicesTime", description = "A measure of how long it takes to create testing devices (different count of devices!!).")
-    @Timeout
     @Retry
     public Set<DeviceDTO> createTestingDevices(@QueryParam("count") @DefaultValue("10") final Integer count,
                                                @QueryParam("includeCities") @DefaultValue("false") Boolean includeCities) {
@@ -161,7 +160,7 @@ public class SimulationResourceProvider implements SimulationResource {
                              @QueryParam("firstResult") Integer firstResult,
                              @QueryParam("maxResults") Integer maxResults,
                              @QueryParam("single") @DefaultValue("true") Boolean executeAsSingle,
-                             @QueryParam("includeCities") @DefaultValue("true") Boolean includeCities) {
+                             @QueryParam("includeCities") @DefaultValue("false") Boolean includeCities) {
 
         LocalMap<String, Boolean> localMap = vertx.sharedData().getLocalMap(DEFAULT_SHARED_MAP);
         Boolean state = Optional.ofNullable(localMap.get(SENDING_MAP_ATTRIBUTE)).orElse(false);

@@ -14,6 +14,7 @@ import org.smartlights.user.utils.Constants;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PATCH;
@@ -65,7 +66,7 @@ public interface UsersResource {
             @APIResponse(responseCode = "401", description = "Unauthorized"),
             @APIResponse(responseCode = "409", description = "Conflict")
     })
-    UserDTO createUser(UserDTO user);
+    UserDTO createUser(@NotNull UserDTO user);
 
     @PATCH
     @RolesAllowed({UserRole.ADMIN})
@@ -77,7 +78,7 @@ public interface UsersResource {
             @APIResponse(responseCode = "404", description = "User not found"),
             @APIResponse(responseCode = "401", description = "Unauthorized")
     })
-    UserDTO updateUser(UserDTO user);
+    UserDTO updateUser(@NotNull UserDTO user);
 
     @Path("{id}")
     UserResource forwardToUserResource(@PathParam("id") Long userID, UserSession session);

@@ -1,6 +1,4 @@
 ## Smart Street Lighting Microservices Concept
-(warn : Proposal only)
-
 ### General
 Nowadays, it's a great problem with light pollution in cities. 
 Smart street lights could improve the situation by decreasing the intensity of the emitted light. 
@@ -60,9 +58,12 @@ which takes the `maxResults` items from `firstResult` index.
 
 #### Basic metrics
 Collected metrics about device values, where the data are simulated.
+
+##### Data values
 ![Device-Metrics](metrics/deviceMetrics.png)
 
+##### Create device
+![Create-Device-Metrics](metrics/createDevice.png)
 
-
-
-
+##### Prometheus service
+![Prometheus-Metrics](metrics/prometheus-metrics.png)

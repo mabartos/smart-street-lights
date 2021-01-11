@@ -14,6 +14,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -41,7 +42,7 @@ public class UserRepository implements PanacheRepository<UserEntity>, UserReposi
         roles.add(UserRole.ADMIN);
         entity.setRoles(roles);
 
-        final String message = create(entity) != null ? "Admin created." : "Cannot create admin user.";
+        final String message = Optional.ofNullable(create(entity)).map(f -> "Admin created.").orElse("Cannot create admin user.");
         logger.info(message);
     }
 
